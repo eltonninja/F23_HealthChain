@@ -16,7 +16,9 @@ HealthChain aims to create a framework for standardizing personal health data us
 ### Blockchain component
 
 - Permissioned Blockchain: The blockchain will be a permissioned blockchain. The medical records need to be associated with the patients and doctors need to be verified to ensure the safety of the patients.
-- Oracle: We will need an oracle to fetch the medical records from an off-chain database as we do not want the medical records to be stored on the blockchain for fear of privacy issues. 
+- Oracle:
+  - We will need an oracle to fetch the medical records from an off-chain database as we do not want the medical records to be stored on the blockchain for fear of privacy issues.
+  - We’ll also need another Oracle to communicate with the AI models
 - The blockchain would serve as a governing factor to control permissions to edit and view patient data
 - Patients would be able to allow doctors to edit personal data. 
 - Patients would also be able to remove doctor permission once they saw fit
