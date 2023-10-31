@@ -22,7 +22,7 @@
 
 ## High-Level Component Diagram
 
-![Alt text](relative%20path/imgs/high_level_component_diagram.png?raw=true)
+<img src="./imgs/high_level_component_diagram.png">
 
 ## Sequence Diagram
 
