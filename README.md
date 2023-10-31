@@ -6,8 +6,8 @@
 
 - Data: Synthea is a free open-source software that allows for the generation of synthetic patient medical records that are reflective of actual records, allowing training on large synthetic datasets
 - Considering the sparse time-series nature of medical records (visits can be rare, inconsistent, and with variable observations), a sequential model with an attention mechanism like a transformer seems like a logical choice to navigate the inconsistent data: important observations can be recognized at different times for different patients
-- - Due to sparsity, time-steps may have to be aggregates of visits, and/or patients with limited data may need to be excluded  
-- - Adding engineered/derived features could be useful e.g. age from visit date and birthdate, or rate of observation increase/decrease over time
+  - Due to sparsity, time-steps may have to be aggregates of visits, and/or patients with limited data may need to be excluded  
+  - Adding engineered/derived features could be useful e.g. age from visit date and birthdate, or rate of observation increase/decrease over time
 - AI trains on synthetic patients with binary cross-entropy for classification so that it can predict likelihoods of diseases in patients
 - Disease probabilities are passed to an algorithm for querying a database of doctors: specializations, ratings etc. would be utilized to determine referrals
 
@@ -24,3 +24,36 @@
 
 ## Sequence Diagram
 
+```mermaid
+sequenceDiagram
+    participant A as Patient
+    participant B as UI
+    participant C as Smart Contract
+    participant Z as Doctor
+    participant E1 as Oracle for IPFS
+    participant D as IPFS
+    participant E as Oracle for AI
+    participant F as AI
+    participant G as Algorithm for Doctor Referral
+    participant H as Doctor Database
+
+    A->>B: Add/Remove Doctors or View MR or AI Request
+    Z->>B: View MR or Update MR
+    B->>C: Forward Request
+    C->>E1: Retrieve or Update MR
+    E1->>D: Access IPFS
+    D->>E1: Return MR and/or New Hash
+    E1->>C: Send MR and/or Update Hash
+    C->>B: Decrypt MR for View
+    B->>A: Decrypted MR for View
+    B->>Z: Decrypted MR for View/Update
+    C->>E: AI Request w/ MR
+    E->>F: Forward AI Request
+    F->>G: Analysis on MR
+    G->>H: Query
+    H->>G: Identify Specialist(s)
+    G->>E: Report
+    E->>C: Report
+    C->>B: Report
+    B->>A: Referall(s)
+```
