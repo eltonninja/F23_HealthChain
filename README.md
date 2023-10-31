@@ -2,6 +2,8 @@
 
 ## Project Description
 
+HealthChain aims to create a framework for standardizing personal health data using blockchain technologies and allow for long-term health data analytics through generative AI to allow for objective referral information.
+
 ### AI component
 
 - Data: Synthea is a free open-source software that allows for the generation of synthetic patient medical records that are reflective of actual records, allowing training on large synthetic datasets
