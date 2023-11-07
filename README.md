@@ -39,7 +39,7 @@ sequenceDiagram
     participant E1 as Oracle for IPFS
     participant D as IPFS
     participant E as Oracle for AI
-    participant F as AI
+    participant F as TNN for Disease Identification
     participant G as Algorithm for Doctor Referral
     participant H as Doctor Database
 
@@ -55,7 +55,7 @@ sequenceDiagram
     B->>Z: Decrypted MR for View/Update
     C->>E: AI Request w/ MR
     E->>F: Forward AI Request
-    F->>G: Analysis on MR
+    F->>G: Disease Probabilities
     G->>H: Query
     H->>G: Identify Specialist(s)
     G->>E: Report
