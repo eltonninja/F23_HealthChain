@@ -9,11 +9,11 @@ class CustomUser(AbstractUser):
     
 #create a doctor user type
 class Doctor(models.Model):
+    username = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
-    speciality = models.CharField(max_length=100)
-    hospital = models.CharField(max_length=100)
+    specialty = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
@@ -23,6 +23,7 @@ class Doctor(models.Model):
 
 #create a patient user type
 class Patient(models.Model):
+    username = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
