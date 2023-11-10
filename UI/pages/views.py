@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 
 #import doctor and patient forms
@@ -15,10 +15,17 @@ class AboutPageView(TemplateView):
     template_name = "pages/about.html"
 
 
-def create_doctor(request):
-    form = DoctorCreationForm()
-    return render(request, 'create_doctor.html', {'form': form})
+def doctor_signup(request):
+    if request.method == 'POST':
+        form = DoctorCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = DoctorCreationForm()
+    return render(request, 'doctor_signup.html', {'form': form})
 
-def create_patient(request):
+
+def patient_signup(request):
     form = PatientCreationForm()
     return render(request, 'create_patient.html', {'form': form})
