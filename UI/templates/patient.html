@@ -1,0 +1,44 @@
+{% extends '_base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h1>Welcome Patient!</h1>
+        <p>This is your HealthChain dashboard.</p>
+        <a href="#" class="btn btn-primary">View All Records</a>
+        <!--Table containing recent records-->
+
+        <!--Whitespace-->
+        <br><br><br>
+        <h4>Recent Visits</h4>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Doctor</th>
+              <th scope="col">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">12/12/2018</th>
+              <td>Dr. John Doe</td>
+              <td>Checkup</td>
+            </tr>
+            <tr>
+              <th scope="row">12/12/2018</th>
+              <td>Dr. John Doe</td>
+              <td>Checkup</td>
+            </tr>
+            <tr>
+              <th scope="row">12/12/2018</th>
+              <td>Dr. John Doe</td>
+              <td>Checkup</td>
+            </tr>
+          </tbody>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

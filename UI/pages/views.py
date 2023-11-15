@@ -29,3 +29,9 @@ def doctor_signup(request):
 def patient_signup(request):
     form = PatientCreationForm()
     return render(request, 'create_patient.html', {'form': form})
+
+def doctor(request):
+    return render(request, 'doctor.html')
+
+def patient(request):
+    return render(request, 'patient.html')
