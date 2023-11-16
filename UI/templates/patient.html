@@ -4,20 +4,35 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6 offset-md-3">
-        <h1>Welcome Patient!</h1>
-        <p>This is your HealthChain dashboard.</p>
-        <a href="#" class="btn btn-primary">View All Records</a>
-        <!--Table containing recent records-->
-
-        <!--Whitespace-->
-        <br><br><br>
-        <h4>Recent Visits</h4>
+        <h1>Welcome, [Patient Name]!</h1>
+        <p>This is your personal health dashboard.</p>
+        <h2>Personal Information</h2>
+        <p>Name: [Patient Name]</p>
+        <p>Age: [Patient Age]</p>
+        <p>Gender: [Patient Gender]</p>
+        <h2>Upcoming Appointments</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+              <th scope="col">Doctor</th>
+              <th scope="col">Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populate this with data from the server -->
+          </tbody>
+        </table>
+        <h2>Recent Visits</h2>
         <table class="table table-striped">
           <thead>
             <tr>
               <th scope="col">Date</th>
               <th scope="col">Doctor</th>
               <th scope="col">Description</th>
+              <th scope="col">Records</th>
+              <th scope="col">Address</th>
             </tr>
           </thead>
           <tbody>
@@ -25,20 +40,28 @@
               <th scope="row">12/12/2018</th>
               <td>Dr. John Doe</td>
               <td>Checkup</td>
+              <td><a href="#">View</a></td>
+              <td><a href="#">0x123456789</a></td>
+
+
             </tr>
             <tr>
               <th scope="row">12/12/2018</th>
               <td>Dr. John Doe</td>
               <td>Checkup</td>
+              <td><a href="#">View</a></td>
+              <td><a href="#">0x123456789</a></td>
             </tr>
             <tr>
               <th scope="row">12/12/2018</th>
               <td>Dr. John Doe</td>
               <td>Checkup</td>
+              <td><a href="#">View</a></td>
+              <td><a href="#">0x123456789</a></td>
             </tr>
           </tbody>
-
       </div>
     </div>
   </div>
 {% endblock %}
+

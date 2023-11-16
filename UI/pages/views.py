@@ -35,3 +35,9 @@ def doctor(request):
 
 def patient(request):
     return render(request, 'patient.html')
+
+def ai(request):
+    return render(request, 'ai.html')
+
+def providers(request):
+    return render(request, 'providers.html')

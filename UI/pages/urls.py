@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import HomePageView, AboutPageView, doctor_signup, patient_signup, doctor, patient
+from .views import HomePageView, AboutPageView, doctor_signup, patient_signup, doctor, patient, ai, providers
 
 urlpatterns = [
     path("", HomePageView.as_view(), name="home"),
@@ -9,5 +9,7 @@ urlpatterns = [
     path('patient_signup/', patient_signup, name='patient_signup'),
     path('doctor/', doctor, name='doctor'),
     path('patient/', patient, name='patient'),
+    path('ai/', ai, name='ai'),
+    path('providers/', providers, name='providers'),
 
 ]
