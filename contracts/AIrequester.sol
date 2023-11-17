@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.7.0 <0.9.0;
 
+/**
+ * Might not be needed based on implementation changes
+ * We may not want this on the blockchain due to the risk of putting the medical records on the blockchain
+ */
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 
