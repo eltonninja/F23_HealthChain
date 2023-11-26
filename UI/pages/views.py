@@ -41,3 +41,6 @@ def ai(request):
 
 def providers(request):
     return render(request, 'providers.html')
+
+# def metamask_signin(request):
+#     return render(request, 'pages/metamask_signin.html')

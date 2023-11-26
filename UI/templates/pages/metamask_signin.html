@@ -1,0 +1,13 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block title %}Sign in with MetaMask{% endblock %}
+
+{% block content %}
+<h2>Sign in with MetaMask</h2>
+<button class="btn btn-primary" onclick="connectMetaMask()">Sign in with MetaMask</button>
+
+<!-- Include your JavaScript file for MetaMask interaction -->
+<script src="{% static 'js/metamask_connect.js' %}"></script>
+
+{% endblock content %}
