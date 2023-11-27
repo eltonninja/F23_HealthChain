@@ -2,10 +2,13 @@ from django.views.generic import TemplateView
 from django.shortcuts import redirect, render
 
 
-#import doctor and patient forms
+
+#import DoctorCreationForm and PatientCreationForm from forms.py
 from accounts.forms import DoctorCreationForm, PatientCreationForm
+
 from django.views.generic import TemplateView
 from django.shortcuts import render
+
 
 #import doctor and patient models
 from accounts.models import Doctor, Patient
@@ -19,22 +22,23 @@ class AboutPageView(TemplateView):
 
 
 def doctor_signup(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = DoctorCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('home.html')
+            return redirect('/')
     else:
         form = DoctorCreationForm()
     return render(request, 'doctor_signup.html', {'form': form})
+   
 
 
 def patient_signup(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = PatientCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('home.html')
+            return redirect('/')
     else:
         form = PatientCreationForm()
     return render(request, 'patient_signup.html', {'form': form})
