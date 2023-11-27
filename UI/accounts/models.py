@@ -17,6 +17,7 @@ class Doctor(models.Model):
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
+    USERNAME_FIELD = 'email'
 
     def __str__(self):
         return self.name
@@ -30,6 +31,7 @@ class Patient(models.Model):
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
+    USERNAME_FIELD = 'email'
 
     def __str__(self):
         return self.name

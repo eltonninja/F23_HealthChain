@@ -14,12 +14,11 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = ('email', 'username',)
 
-
 class DoctorCreationForm(CustomUserCreationForm):
 
     class Meta(CustomUserCreationForm.Meta):
         model = Doctor
-        fields = UserCreationForm.Meta.fields + ('phone', 'specialty', 'address', 'city', 'country',)
+        fields = UserCreationForm.Meta.fields + ('phone', 'address', 'city' , 'country', 'specialty',)
 
 class PatientCreationForm(CustomUserCreationForm):
 

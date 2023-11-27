@@ -1,8 +1,9 @@
-<extends file="base.html"/>
-<html>
+{% extends '_base.html' %}
+{% block content %}
 <head>
-    <title>Create Doctor</title>
+    <title>Create Patient</title>
 </head>
+<h2> Patient Signup</h2>
 <body>
     <form method="post">
         {% csrf_token %}
@@ -11,3 +12,4 @@
     </form>
 </body>
 </html>
+{% endblock %}
