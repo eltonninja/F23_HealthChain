@@ -20,23 +20,15 @@ async function handleAccountChanged(accounts) {
     } else {
         const account = accounts[0];
         console.log('Selected account:', account);
-        // Send the account to the Django backend
-        fetch('/path-to-your-django-view/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken') // Ensure CSRF token is sent
-            },
-            body: JSON.stringify({ account: account })
-        }).then(response => response.json())
-          .then(data => {
-            console.log('Success:', data);
-            // Handle response data
-        }).catch((error) => {
-            console.error('Error:', error);
-        });
+        
+        // Store the account in localStorage or sessionStorage
+        localStorage.setItem('ethereumAccount', account);
+
+        // Redirect to the details form
+        window.location.href = '/metamask_signin/'; // Update with the actual path
     }
 }
+
 
 function getCookie(name) {
     let cookieValue = null;

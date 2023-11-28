@@ -9,7 +9,7 @@ import json
 
 
 #import DoctorCreationForm and PatientCreationForm from forms.py
-from accounts.forms import DoctorCreationForm, PatientCreationForm
+from accounts.forms import DoctorCreationForm, PatientCreationForm, UserDetailsForm
 
 from django.views.generic import TemplateView
 from django.shortcuts import render
@@ -73,3 +73,44 @@ def process_account(request):
     # Process the account data here
 
     return JsonResponse({'status': 'success'})
+
+
+def metamask_signin(request):
+    # Retrieve Ethereum account from session or request
+    ethereum_account = request.session.get('ethereum_account')
+    print('metamask_signin')
+    # Check if user details are already filled out
+    try:
+        user = Patient.objects.get(ethereum_account=ethereum_account)
+        if user and user.has_filled_details():  # Assuming `has_filled_details` method checks if details are filled
+            print('-returning user')
+            return redirect('/')  # Redirect to user dashboard or home page
+        else:
+            print('-new user')
+            return redirect('patient-details')  # Redirect to fill details form
+    except Patient.DoesNotExist:
+        # Handle the case where user does not exist
+        pass  # Implement appropriate logic
+
+    return render(request, 'metamask_signin.html')
+
+def patient_details(request):
+    if request.method == 'POST':
+        form = UserDetailsForm(request.POST)
+        if form.is_valid():
+            ethereum_account = request.session.get('ethereum_account')
+            # Fetch the existing user
+            try:
+                patient = Patient.objects.get(ethereum_account=ethereum_account)
+                # Update user details
+                for field, value in form.cleaned_data.items():
+                    setattr(patient, field, value)
+                patient.save()
+                return redirect('/')
+            except Patient.DoesNotExist:
+                # Handle case where user does not exist
+                pass  # Implement appropriate logic
+    else:
+        form = UserDetailsForm()
+    return render(request, 'patient_details.html', {'form': form})
+

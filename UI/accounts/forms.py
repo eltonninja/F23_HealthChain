@@ -37,3 +37,13 @@ class PatientChangeForm(CustomUserChangeForm):
     class Meta:
         model = Patient
         fields = UserChangeForm.Meta.fields
+
+
+class UserDetailsForm(forms.ModelForm):
+    class Meta:
+        model = Patient  # or CustomUser/Doctor/Patient, depending on your requirements
+        fields = ['name', 'phone', 'address', 'city', 'country']  # Add any other fields you need
+
+    def __init__(self, *args, **kwargs):
+        super(UserDetailsForm, self).__init__(*args, **kwargs)
+        # Here you can add any custom initialization or modifications to the form fields

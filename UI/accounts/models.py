@@ -1,8 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+# class CustomUser(AbstractUser):
+#     pass
+
 class CustomUser(AbstractUser):
-    pass
+    ethereum_account = models.CharField(max_length=42, blank=True, null=True)
 
 class Doctor(CustomUser):
     name = models.CharField(max_length=100)
@@ -25,3 +28,6 @@ class Patient(CustomUser):
     def __str__(self):
         return self.name
     
+    def has_filled_details(self):
+        # Check if required fields are filled. Adjust the fields as necessary.
+        return all([self.name, self.phone, self.address, self.city, self.country])
