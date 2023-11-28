@@ -1,6 +1,11 @@
 from django.views.generic import TemplateView
 from django.shortcuts import redirect, render
 
+#handle account
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import json
 
 
 #import DoctorCreationForm and PatientCreationForm from forms.py
@@ -58,3 +63,13 @@ def providers(request):
 
 # def metamask_signin(request):
 #     return render(request, 'pages/metamask_signin.html')
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def process_account(request):
+    data = json.loads(request.body)
+    account = data.get('account')
+    print(request.body)
+    # Process the account data here
+
+    return JsonResponse({'status': 'success'})

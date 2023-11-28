@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import HomePageView, AboutPageView, doctor_signup, patient_signup, doctor, patient, ai, providers#, metamask_signin
+from .views import HomePageView, AboutPageView, doctor_signup, patient_signup, doctor, patient, ai, providers, process_account
 
 
 urlpatterns = [
@@ -13,5 +13,5 @@ urlpatterns = [
     path('ai/', ai, name='ai'),
     path('providers/', providers, name='providers'),
 
-    # path('metamask_signin/', metamask_signin, name='metamask_signin'),
+    path('path-to-your-django-view/', process_account, name='process_account'),
 ]
