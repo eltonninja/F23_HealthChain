@@ -69,15 +69,19 @@ def metamask_signin(request):
     try:
         user = NewUser.objects.get(ethereum_account=ethereum_account)
         if user and user.has_filled_details():  # Assuming `has_filled_details` method checks if details are filled
-            print('-returning user')
-            return redirect('patient-details')  # Redirect to user dashboard or home page
+            print('-address in database || user has filled details')
+            return redirect('/')  # Redirect to user dashboard or home page
         else:
-            print('-new user')
+            print('-address in database || user has NOT filled all details')
             return redirect('patient-details')  # Redirect to fill details form
     except NewUser.DoesNotExist:
-        # Handle the case where user does not exist
-        pass  # Implement appropriate logic
+        print('-address NOT in database || user has NOT filled all details')
+        # Create New User Here::
+        
+        # return redirect('patient-details') # Redirect to fill details form
+        pass  # Implement appropriate logic, then remove this line
 
+    print('5')
     return render(request, 'pages/metamask_signin.html')
 
 def patient_details(request):
