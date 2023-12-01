@@ -16,8 +16,6 @@ from accounts.forms import UserDetailsForm
 from django.views.generic import TemplateView
 from django.shortcuts import render
 
-
-#import doctor and patient models
 from accounts.models import NewUser
 
 class HomePageView(TemplateView):
@@ -63,7 +61,9 @@ def metamask_signin(request):
     if ethereum_account is None:
         print("metamask_signin | account: None")
         return render(request, 'pages/metamask_signin.html') #return to signin, it didnt work
+    
     print("metamask_signin | account: " + ethereum_account)
+    request.session['ethereum_account'] = ethereum_account  # Store in session
 
     # Check if user details are already filled out
     try:
@@ -87,6 +87,7 @@ def patient_details(request):
         form = UserDetailsForm(request.POST)
         if form.is_valid():
             ethereum_account = request.session.get('ethereum_account')
+            print("retrieved address: " + ethereum_account)
             # Fetch the existing user
             try:
                 patient = NewUser.objects.get(username=ethereum_account)
