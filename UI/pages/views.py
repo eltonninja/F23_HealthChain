@@ -9,14 +9,14 @@ import json
 
 
 #import DoctorCreationForm and PatientCreationForm from forms.py
-from accounts.forms import DoctorCreationForm, PatientCreationForm, UserDetailsForm
+from accounts.forms import UserDetailsForm
 
 from django.views.generic import TemplateView
 from django.shortcuts import render
 
 
 #import doctor and patient models
-from accounts.models import Doctor, Patient
+from accounts.models import NewUser
 
 class HomePageView(TemplateView):
     template_name = "pages/home.html"
@@ -24,29 +24,6 @@ class HomePageView(TemplateView):
 
 class AboutPageView(TemplateView):
     template_name = "pages/about.html"
-
-
-def doctor_signup(request):
-    if request.method == "POST":
-        form = DoctorCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
-    else:
-        form = DoctorCreationForm()
-    return render(request, 'doctor_signup.html', {'form': form})
-   
-
-
-def patient_signup(request):
-    if request.method == "POST":
-        form = PatientCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
-    else:
-        form = PatientCreationForm()
-    return render(request, 'patient_signup.html', {'form': form})
 
 
 def doctor(request):
@@ -59,6 +36,8 @@ def ai(request):
     return render(request, 'ai.html')
 
 def providers(request):
+    #render 
+
     return render(request, 'providers.html')
 
 # def metamask_signin(request):
@@ -81,14 +60,14 @@ def metamask_signin(request):
     print('metamask_signin')
     # Check if user details are already filled out
     try:
-        user = Patient.objects.get(ethereum_account=ethereum_account)
+        user = NewUser.objects.get(ethereum_account=ethereum_account)
         if user and user.has_filled_details():  # Assuming `has_filled_details` method checks if details are filled
             print('-returning user')
             return redirect('patient-details')  # Redirect to user dashboard or home page
         else:
             print('-new user')
             return redirect('patient-details')  # Redirect to fill details form
-    except Patient.DoesNotExist:
+    except NewUser.DoesNotExist:
         # Handle the case where user does not exist
         pass  # Implement appropriate logic
 
@@ -101,13 +80,13 @@ def patient_details(request):
             ethereum_account = request.session.get('ethereum_account')
             # Fetch the existing user
             try:
-                patient = Patient.objects.get(ethereum_account=ethereum_account)
+                patient = NewUser.objects.get(ethereum_account=ethereum_account)
                 # Update user details
                 for field, value in form.cleaned_data.items():
                     setattr(patient, field, value)
                 patient.save()
                 return redirect('/')
-            except Patient.DoesNotExist:
+            except NewUser.DoesNotExist:
                 # Handle case where user does not exist
                 pass  # Implement appropriate logic
     else:

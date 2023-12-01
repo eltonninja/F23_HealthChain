@@ -1,32 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-
-from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser, Doctor, Patient
+from .models import NewUser
 
 class CustomUserAdmin(UserAdmin):
-    add_form = CustomUserCreationForm
-    form = CustomUserChangeForm
-    model = CustomUser
-    list_display = ['email', 'username',]
+    model = NewUser
+    list_display = ['username', 'email', 'name', 'phone', 'address', 'city', 'country', 'specialty', 'ethereum_account']
+    fieldsets = UserAdmin.fieldsets + (
+            (None, {'fields': ('name', 'phone', 'address', 'city', 'country', 'specialty', 'ethereum_account')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+            (None, {'fields': ('name', 'phone', 'address', 'city', 'country', 'specialty', 'ethereum_account')}),
+    )
 
-admin.site.register(CustomUser, CustomUserAdmin)
 
-class DoctorAdmin(admin.ModelAdmin):
-    model = Doctor
-    list_display = ['name', 'phone', 'specialty', 'address', 'city', 'country']
-
-    #change verbose name
-    verbose_name_plural = "doctors"
-
-admin.site.register(Doctor, DoctorAdmin)
-
-class PatientAdmin(admin.ModelAdmin):
-    model = Patient
-    list_display = ['name', 'phone', 'address', 'city', 'country']
-
-    #change verbose name
-    verbose_name_plural = "patients"
-
-admin.site.register(Patient, PatientAdmin)
+admin.site.register(NewUser, CustomUserAdmin)
