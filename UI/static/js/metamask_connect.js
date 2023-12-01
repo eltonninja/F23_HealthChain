@@ -25,7 +25,7 @@ async function handleAccountChanged(accounts) {
         localStorage.setItem('ethereumAccount', account);
 
         // Redirect to the details form
-        window.location.href = '/metamask_signin/'; // Update with the actual path
+        window.location.href = '/metamask_signin/?account=' + account;
     }
 }
 

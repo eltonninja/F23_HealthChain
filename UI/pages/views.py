@@ -58,8 +58,13 @@ def process_account(request):
 
 def metamask_signin(request):
     # Retrieve Ethereum account from session or request
-    ethereum_account = request.session.get('ethereum_account')
-    print('metamask_signin')
+    ethereum_account = request.GET.get('account')
+    
+    if ethereum_account is None:
+        print("metamask_signin | account: None")
+    else:
+        print("metamask_signin | account: " + ethereum_account)
+
     # Check if user details are already filled out
     try:
         user = NewUser.objects.get(ethereum_account=ethereum_account)
@@ -73,7 +78,7 @@ def metamask_signin(request):
         # Handle the case where user does not exist
         pass  # Implement appropriate logic
 
-    return render(request, 'metamask_signin.html')
+    return render(request, 'pages/metamask_signin.html')
 
 def patient_details(request):
     if request.method == 'POST':
