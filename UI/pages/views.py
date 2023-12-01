@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
 
+from django.contrib.auth import login
+
 
 #import DoctorCreationForm and PatientCreationForm from forms.py
 from accounts.forms import UserDetailsForm
@@ -85,7 +87,11 @@ def patient_details(request):
                 for field, value in form.cleaned_data.items():
                     setattr(patient, field, value)
                 patient.save()
+                backend = NewUser.objects.get(id=patient.id)
+                user = backend
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('/')
+        
             except NewUser.DoesNotExist:
                 # Handle case where user does not exist
                 pass  # Implement appropriate logic
