@@ -1,0 +1,10 @@
+
+UI/.venv/Scripts/python.exe
+UI/.venv/Lib/site-packages/psycopg_binary/pq.cp311-win_amd64.pyd
+UI/.venv/Lib/site-packages/psycopg_binary/_psycopg.cp311-win_amd64.pyd
+UI/.venv/Lib/site-packages/psycopg_binary.libs/libwinpthread-1.dll
+UI/.venv/Lib/site-packages/psycopg_binary.libs/libssl-1_1-x64-5eef6f80559e53f5fd85ee59d1bd4771.dll
+UI/.venv/Lib/site-packages/psycopg_binary.libs/libpq-f888704c89c711452c2fab7f0010a3a9.dll
+UI/.venv/Lib/site-packages/psycopg_binary.libs/libintl-9-6b2fa35014185f5e79c4c76df54d19ae.dll
+UI/.venv/Lib/site-packages/psycopg_binary.libs/libiconv-2.dll
+UI/.venv/Lib/site-packages/psycopg_binary.libs/libcrypto-1_1-x64-0ac2b901b99575b87df1800c1efd9996.dll
