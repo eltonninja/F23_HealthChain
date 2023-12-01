@@ -84,7 +84,7 @@ def metamask_signin(request):
         user = Patient.objects.get(ethereum_account=ethereum_account)
         if user and user.has_filled_details():  # Assuming `has_filled_details` method checks if details are filled
             print('-returning user')
-            return redirect('/')  # Redirect to user dashboard or home page
+            return redirect('patient-details')  # Redirect to user dashboard or home page
         else:
             print('-new user')
             return redirect('patient-details')  # Redirect to fill details form

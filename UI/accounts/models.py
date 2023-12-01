@@ -30,4 +30,8 @@ class Patient(CustomUser):
     
     def has_filled_details(self):
         # Check if required fields are filled. Adjust the fields as necessary.
-        return all([self.name, self.phone, self.address, self.city, self.country])
+        required_fields = ['name', 'phone', 'address', 'city', 'country']
+        for field in required_fields:
+            if not getattr(self, field):
+                return False
+        return True
