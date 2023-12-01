@@ -1,3 +1,4 @@
+UI/.venv/
 
 UI/.venv/Scripts/python.exe
 UI/.venv/Lib/site-packages/psycopg_binary/pq.cp311-win_amd64.pyd
