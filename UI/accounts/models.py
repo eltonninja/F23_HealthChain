@@ -1,13 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# class CustomUser(AbstractUser):
-#     pass
-
-class CustomUser(AbstractUser):
-    ethereum_account = models.CharField(max_length=42, blank=True, null=True)
-
-class NewUser(CustomUser):
+class NewUser(AbstractUser):
+    #inherits username from AbstractUser and sets username=ethereum_account
+    # Other fields
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
     address = models.CharField(max_length=100)

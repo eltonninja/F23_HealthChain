@@ -62,27 +62,25 @@ def metamask_signin(request):
     
     if ethereum_account is None:
         print("metamask_signin | account: None")
-    else:
-        print("metamask_signin | account: " + ethereum_account)
+        return render(request, 'pages/metamask_signin.html') #return to signin, it didnt work
+    print("metamask_signin | account: " + ethereum_account)
 
     # Check if user details are already filled out
     try:
-        user = NewUser.objects.get(ethereum_account=ethereum_account)
+        user = NewUser.objects.get(username=ethereum_account)
         if user and user.has_filled_details():  # Assuming `has_filled_details` method checks if details are filled
             print('-address in database || user has filled details')
-            return redirect('/')  # Redirect to user dashboard or home page
+            return redirect('/')  # Redirect to user dashboard or home page, all set
         else:
             print('-address in database || user has NOT filled all details')
             return redirect('patient-details')  # Redirect to fill details form
     except NewUser.DoesNotExist:
         print('-address NOT in database || user has NOT filled all details')
-        # Create New User Here::
-        
-        # return redirect('patient-details') # Redirect to fill details form
-        pass  # Implement appropriate logic, then remove this line
-
-    print('5')
-    return render(request, 'pages/metamask_signin.html')
+        # Create a new user with the Ethereum account as the username
+        new_user = NewUser(username=ethereum_account)
+        new_user.save()
+        print('New user created with username=', ethereum_account)
+        return redirect('patient-details')  # Redirect to fill details form
 
 def patient_details(request):
     if request.method == 'POST':
@@ -91,7 +89,7 @@ def patient_details(request):
             ethereum_account = request.session.get('ethereum_account')
             # Fetch the existing user
             try:
-                patient = NewUser.objects.get(ethereum_account=ethereum_account)
+                patient = NewUser.objects.get(username=ethereum_account)
                 # Update user details
                 for field, value in form.cleaned_data.items():
                     setattr(patient, field, value)
