@@ -35,10 +35,12 @@ def patient(request):
 def ai(request):
     return render(request, 'ai.html')
 
-def providers(request):
-    #render 
+from django.contrib.auth import get_user_model
 
-    return render(request, 'providers.html')
+def providers(request):
+    User = get_user_model()
+    users = User.objects.all()
+    return render(request, 'providers.html', {'users': users})
 
 # def metamask_signin(request):
 #     return render(request, 'pages/metamask_signin.html')
