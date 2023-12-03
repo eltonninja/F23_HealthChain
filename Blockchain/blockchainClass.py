@@ -141,18 +141,10 @@ class BlockchainClass():
 
   #uploads the patient medical record to the database
   #doctor uploads a FHIR or CSV file (tbd) through the UI
-  def uploadRecord(self, patientAddress, doctorAddress, record):
+  def uploadRecord(self, patientAddress, doctorAddress, hash_, record):
 
     if(self.contract.functions.doctorCheckPermissions(patientAddress, doctorAddress).call()):
-      #TODO: Maybe some preprocessing idk
-
-      #TODO: add the medical record to the database 
-      #TODO: hash the record 
-
-      #hard coded values for testing replace this with appropriate values
-      hash_ = "IhaveNoInspiration"
-      pointer = "part2"
-
+      
       Chain_id = self.web3.eth.chain_id
 
       nonce = self.web3.eth.get_transaction_count(self.address)
