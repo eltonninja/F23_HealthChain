@@ -27,7 +27,7 @@ class BlockchainClass():
     self.address = account.address
 
     #same here environmental variable
-    contract_address = "0xc9a62f6D80E64C913E20D08d14bBD9facE211128"
+    contract_address = "0x53b982Ee7ba21D357307CA4154Edb9C3d745886f"
     
     self.contract = self.web3.eth.contract(address=contract_address, abi=contract_abi)
     
