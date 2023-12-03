@@ -27,7 +27,7 @@ class BlockchainClass():
     self.address = account.address
 
     #same here environmental variable
-    contract_address = "0xc9a62f6D80E64C913E20D08d14bBD9facE211128"
+    contract_address = "0x53b982Ee7ba21D357307CA4154Edb9C3d745886f"
     
     self.contract = self.web3.eth.contract(address=contract_address, abi=contract_abi)
     
@@ -141,18 +141,10 @@ class BlockchainClass():
 
   #uploads the patient medical record to the database
   #doctor uploads a FHIR or CSV file (tbd) through the UI
-  def uploadRecord(self, patientAddress, doctorAddress, record):
+  def uploadRecord(self, patientAddress, doctorAddress, hash_, record):
 
     if(self.contract.functions.doctorCheckPermissions(patientAddress, doctorAddress).call()):
-      #TODO: Maybe some preprocessing idk
-
-      #TODO: add the medical record to the database 
-      #TODO: hash the record 
-
-      #hard coded values for testing replace this with appropriate values
-      hash_ = "IhaveNoInspiration"
-      pointer = "part2"
-
+      
       Chain_id = self.web3.eth.chain_id
 
       nonce = self.web3.eth.get_transaction_count(self.address)

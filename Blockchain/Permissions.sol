@@ -22,7 +22,6 @@ contract Permissions {
         string name;
         string specialization;
         uint256 rating;
-        //bool isAuthorized;
     }
 
     // Define a struct to hold patient information
@@ -35,10 +34,10 @@ contract Permissions {
     }
 
     // Mapping from doctor addresses to their information
-    mapping(address => Doctor) public doctors;
+    mapping(address => Doctor) private doctors;
 
     // Mapping from patient addresses to their information
-    mapping(address => Patient) public patients;
+    mapping(address => Patient) private patients;
 
     // Function to add a new doctor
     function addDoctor(address _doctorAddress, string memory _name, string memory _specialization, uint256 _rating) public onlyOwner {
@@ -58,8 +57,6 @@ contract Permissions {
     // Function for a patient to revoke authorization of a doctor
     function revokeDoctor(address _patientAddress, address _doctorAddress) public onlyOwner {
         require(patients[_patientAddress].authorizedDoctors[_doctorAddress], "Doctor is not authorized.");
-
-        // Logic to remove the doctor's address from the patient's authorizedDoctors array       
         patients[_patientAddress].authorizedDoctors[_doctorAddress] = false;      
       }
 
@@ -71,18 +68,19 @@ contract Permissions {
         temp.birthYear = _birthYear;
     }
 
-    // Additional functions for contract management and data handling would be added below
-
+    //function to return the patient's hash
     function returnHash(address _patientAddress) public view returns (string memory) {
       require(bytes(patients[_patientAddress].hash).length != 0, "Hash not initialized");
       return patients[_patientAddress].hash;
     }
 
+    //function to return the patient's database pointer
     function returnPointer(address _patientAddress) public view returns (string memory) {
       require(bytes(patients[_patientAddress].pointer).length != 0, "Pointer not initialized");
       return patients[_patientAddress].pointer;
     }
 
+    //function to check if a doctor has permission to access a patient's address/pointer
     function doctorCheckPermissions(address _patientAddress, address _doctorAddress) public view returns (bool) {
       if (patients[_patientAddress].authorizedDoctors[_doctorAddress]) {
         return true;
@@ -90,13 +88,11 @@ contract Permissions {
       return false;
     }
 
+    //function to edit a patient's hash and pointer
     function setPatientHashPointer(address _patientAddress, string memory _hash, string memory _pointer) public onlyOwner {
       require(patients[_patientAddress].birthYear != 0, "Patient not initialized");
       patients[_patientAddress].hash = _hash;
       patients[_patientAddress].pointer = _pointer;
     }
 
-    function quickTest(address _patientAddress, address _doctorAddress) public view returns(bool) {
-      return patients[_patientAddress].authorizedDoctors[_doctorAddress];
-    }
 }
