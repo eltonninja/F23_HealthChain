@@ -22,7 +22,6 @@ contract Permissions {
         string name;
         string specialization;
         uint256 rating;
-        //bool isAuthorized;
     }
 
     // Define a struct to hold patient information
