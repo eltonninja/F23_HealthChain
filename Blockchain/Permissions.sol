@@ -95,8 +95,4 @@ contract Permissions {
       patients[_patientAddress].hash = _hash;
       patients[_patientAddress].pointer = _pointer;
     }
-
-    function quickTest(address _patientAddress, address _doctorAddress) public view returns(bool) {
-      return patients[_patientAddress].authorizedDoctors[_doctorAddress];
-    }
 }
