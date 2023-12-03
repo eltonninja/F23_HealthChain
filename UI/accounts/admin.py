@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import NewUser
+from .models import NewUser, Fhir
 
 class CustomUserAdmin(UserAdmin):
     model = NewUser
@@ -15,4 +15,15 @@ class CustomUserAdmin(UserAdmin):
             (None, {'fields': ('name', 'phone', 'address', 'city', 'country', 'specialty')}),
     )
 
+class FhirAdmin(admin.ModelAdmin):
+        model = Fhir
+        list_display = ['file', 'Eth_address', 'name']
+        fieldsets = UserAdmin.fieldsets + (
+            (None, {'fields': ('file', 'Eth_address', 'name')}),
+        )
+        add_fieldsets = UserAdmin.add_fieldsets + (
+            (None, {'fields': ('file', 'Eth_address', 'name')}),
+        )
+        
 admin.site.register(NewUser, CustomUserAdmin)
+admin.site.register(Fhir, FhirAdmin)
