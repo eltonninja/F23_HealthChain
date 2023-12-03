@@ -11,7 +11,7 @@ from django.contrib.auth import login
 
 
 #import DoctorCreationForm and PatientCreationForm from forms.py
-from accounts.forms import UserDetailsForm
+from accounts.forms import UserDetailsForm, fhirForm
 
 from django.views.generic import TemplateView
 from django.shortcuts import render
@@ -108,4 +108,14 @@ def patient_details(request):
     else:
         form = UserDetailsForm()
     return render(request, 'patient_details.html', {'form': form})
+
+def fhir_upload(request):
+    if request.method == 'POST':
+        form = fhirForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = fhirForm()
+    return render(request, 'fhir_upload.html', {'form': form})
 

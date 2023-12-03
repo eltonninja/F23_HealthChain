@@ -1,0 +1,21 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<!--Display form-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1>FHIR File Upload</h1>
+            <p>Upload your FHIR file here.</p>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="fhir_file" class="form-label">FHIR File</label>
+                    <input class="form-control" type="file" id="fhir_file" name="fhir_file">
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
