@@ -38,8 +38,8 @@ def ai(request):
 from django.contrib.auth import get_user_model
 
 def providers(request):
-    User = get_user_model()
-    users = User.objects.all()
+    User = NewUser
+    users = NewUser.objects.all()
     return render(request, 'providers.html', {'users': users})
 
 # def metamask_signin(request):
@@ -118,4 +118,6 @@ def fhir_upload(request):
     else:
         form = fhirForm()
     return render(request, 'fhir_upload.html', {'form': form})
+
+
 

@@ -5,9 +5,10 @@ from .models import NewUser, Fhir
 class UserDetailsForm(forms.ModelForm):
     class Meta:
         model = NewUser
-        fields = ('name', 'phone', 'address', 'city', 'country', 'specialty')
+        fields = ('name', 'phone', 'address', 'city', 'country', 'specialty', 'year')
         labels = {
             'name': 'Name',
+            'year': 'Year',
             'phone': 'Phone',
             'address': 'Address',
             'city': 'City',

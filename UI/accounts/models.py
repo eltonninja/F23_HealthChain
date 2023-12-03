@@ -10,6 +10,7 @@ class NewUser(AbstractUser):
     city = models.CharField(max_length=100)
     specialty = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
+    year = models.CharField(max_length=100)
 
     #if specialty is blank, then it is a patient
     def is_patient(self):
@@ -37,3 +38,5 @@ class Fhir(models.Model):
     def __str__(self):
         return self.name
     
+
+
