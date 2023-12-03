@@ -38,7 +38,6 @@ def ai(request):
 from django.contrib.auth import get_user_model
 
 def providers(request):
-    User = NewUser
     users = NewUser.objects.all()
     return render(request, 'providers.html', {'users': users})
 
