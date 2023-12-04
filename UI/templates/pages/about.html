@@ -1,7 +1,35 @@
 {% extends '_base.html' %}
 
-{% block title %}About page{% endblock %}
+{% block title %}About Us{% endblock %}
 
 {% block content %}
-<h1>About page</h1>
+<center><h1>The Problem</h1></center>
+<p>
+    Communication, especially with our doctors is integral towards the betterment of one’s health, but the information our doctors have on us is seemingly a black box. There is no way for one to view their own healthcare records independently in order to make their own determinations about their health. Knowledge can allow for one to take control of their lives, and find the doctors they need to address any problems that occur, regardless of subjective doctor referral networks. 
+</p>
+
+<center><h1>The Blockchain</h1></center>
+<p>
+    The Solidity smart contract creates a blockchain-based system for managing permissions and data access control within a healthcare context. It allows an owner (potentially a healthcare institution) to manage doctors and patients while controlling access to sensitive patient information.
+The contract includes functionalities to:
+Add doctors and their information such as name, specialization, and rating.
+Add patients and their basic information like name and birth year.
+Enable patients to authorize and revoke access for specific doctors to view their information.
+Store and manage hashes and pointers related to patient data.
+Perform checks on permissions for doctors to access patient data.
+The contract enforces that only the contract owner has the authority to perform critical operations like adding doctors, patients, and setting patient data pointers and hashes. Patients can manage the access permissions for authorized doctors to view their information.
+This blockchain system aims to enhance the security and privacy of patient data by providing a controlled environment where access to sensitive information is regulated and recorded on the blockchain.
+
+</p>
+
+<center><h1>AI</h1></center>
+
+<p>
+    Model is able to properly diagnose several conditions with a >75% accuracy rate, in order to avoid medical panic, this is then converted into a general specialization in which the patient can receive a proper diagnosis from a medical professional. 
+The model has 190,000 sequenced data points with 401 features and can accurately diagnose conditions such as
+Chronic Sinusitis, Prediabetes, Chronic Kidney Disease Stage 1/2, Osteoporosis.
+
+</p>
+
+
 {% endblock content %}
