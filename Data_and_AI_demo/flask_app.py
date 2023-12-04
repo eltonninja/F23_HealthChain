@@ -57,7 +57,7 @@ def fhir_predict():
             recommendation = specialists[suspected_disease]         
 
         # Format and send back the predictions
-        return jsonify(recommendation)
+        return jsonify("Suggested Specialty Referral: " + recommendation)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
