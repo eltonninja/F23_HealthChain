@@ -71,17 +71,19 @@ def metamask_signin(request):
         user = NewUser.objects.get(username=ethereum_account)
         if user and user.has_filled_details():  # Assuming `has_filled_details` method checks if details are filled
             print('-address in database || user has filled details')
-            return redirect('/')  # Redirect to user dashboard or home page, all set
+            return redirect('/')  # All set! : Redirect to user dashboard or home page, all set
         else:
             print('-address in database || user has NOT filled all details')
-            return redirect('patient-details')  # Redirect to fill details form
     except NewUser.DoesNotExist:
         print('-address NOT in database || user has NOT filled all details')
         # Create a new user with the Ethereum account as the username
         new_user = NewUser(username=ethereum_account)
         new_user.save()
         print('New user created with username=', ethereum_account)
-        return redirect('patient-details')  # Redirect to fill details form
+    
+    # IF here, profile need to be updated, redirect to patient-details to do so
+    return redirect('patient-details')  # Redirect to fill details form
+    
 
 def patient_details(request):
     if request.method == 'POST':
@@ -116,16 +118,17 @@ def fhir_upload(request):
             return redirect('home')
     else:
         form = fhirForm()
-    return render(request, 'fhir_upload.html', {'form': form})
+
+    context = {'user': getUser(request), 'form': form}
+    return render(request, 'fhir_upload.html', context)
 
 def profile(request):
-    ethereum_account = request.session.get('ethereum_account')
+    #get user
+    user = getUser(request)
 
-    if ethereum_account is None:
-        # Redirect to login page or another appropriate page if ethereum_account is not in session
-        return redirect('login')  # Replace 'login' with your login page's URL name
-
-    user = NewUser.objects.get(username=ethereum_account)
+    #if user not exist, return to login, no reason should be in profile
+    if user is None:
+        return redirect('login')
 
     if request.method == 'POST':
         form = UserEditForm(request.POST, instance=user)
@@ -138,3 +141,15 @@ def profile(request):
 
     context = {'user': user, 'form': form}
     return render(request, 'pages/profile.html', context)
+
+
+#Return User if exists in database
+def getUser(request):
+    ethereum_account = request.session.get('ethereum_account')
+
+    if ethereum_account is None:
+        return None
+
+    user = NewUser.objects.get(username=ethereum_account)
+
+    return user

@@ -36,6 +36,7 @@
           <li><a href="{% url 'ai' %}" class="nav-link px-2 link-dark">AI Insights</a></li>
           <li><a href="{% url 'providers' %}" class="nav-link px-2 link-dark">Provider Search</a></li>
           <li><a href="{% url 'fhir_upload' %}" class="nav-link px-2 link-dark">FHIR File Upload</a></li>
+          <li><a href="{% url 'profile' %}" class="nav-link px-2 link-dark">Profile</a></li>
         </ul>
 
         <div class="dropdown text-end">
@@ -50,6 +51,10 @@
               <hr class="dropdown-divider">
             </li>
             <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a></li>
+            </li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a href="{% url 'profile' %}" class="nav-link px-2 link-dark">Profile</a></li>
           </ul>
           {% else %}
           <form class="form-inline ml-auto">
