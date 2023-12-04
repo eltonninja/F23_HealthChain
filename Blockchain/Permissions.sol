@@ -17,36 +17,15 @@ contract Permissions {
         _;
     }
 
-    // Define a struct to hold doctor information
-    struct Doctor {
-        string name;
-        string specialization;
-        uint256 rating;
-    }
-
     // Define a struct to hold patient information
     struct Patient {
-        string name;
-        uint256 birthYear;
         mapping(address => bool) authorizedDoctors;
         string hash;
         string pointer;
     }
 
-    // Mapping from doctor addresses to their information
-    mapping(address => Doctor) private doctors;
-
     // Mapping from patient addresses to their information
     mapping(address => Patient) private patients;
-
-    // Function to add a new doctor
-    function addDoctor(address _doctorAddress, string memory _name, string memory _specialization, uint256 _rating) public onlyOwner {
-        doctors[_doctorAddress] = Doctor({
-            name: _name,
-            specialization: _specialization,
-            rating: _rating
-        });
-    }
 
     // Function for a patient to authorize a doctor
     function authorizeDoctor(address _patientAddress, address _doctorAddress) public onlyOwner {
@@ -59,14 +38,6 @@ contract Permissions {
         require(patients[_patientAddress].authorizedDoctors[_doctorAddress], "Doctor is not authorized.");
         patients[_patientAddress].authorizedDoctors[_doctorAddress] = false;      
       }
-
-    // Function to add a new patient
-    function addPatient(address _patientAddress, string memory _name, uint256 _birthYear) public onlyOwner {
-        //can't use patients[_patientAddress] = (_name, _birthYear) because of the mapping
-        Patient storage temp = patients[_patientAddress];
-        temp.name = _name;
-        temp.birthYear = _birthYear;
-    }
 
     //function to return the patient's hash
     function returnHash(address _patientAddress) public view returns (string memory) {
@@ -90,7 +61,6 @@ contract Permissions {
 
     //function to edit a patient's hash and pointer
     function setPatientHashPointer(address _patientAddress, string memory _hash, string memory _pointer) public onlyOwner {
-      require(patients[_patientAddress].birthYear != 0, "Patient not initialized");
       patients[_patientAddress].hash = _hash;
       patients[_patientAddress].pointer = _pointer;
     }
