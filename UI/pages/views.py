@@ -59,7 +59,9 @@ def ai(request):
     return render(request, 'ai.html', context)  
 
 def providers(request):
-    context = {'users': NewUser.objects.all()}
+    context = {
+    'user': NewUser.objects.all(),
+    'users': NewUser.objects.exclude(specialty__isnull=True).exclude(specialty='')}
     return render(request, 'providers.html', context)
 
 @csrf_exempt
