@@ -36,6 +36,17 @@ def send_post_to_flask(data):
     url = 'http://localhost:5000/fhir_predict'
     headers = {'Content-Type': 'application/json'}
 
+    json_data = json.dumps(data)
+
+    # Send the POST request
+    response = requests.post(url, data=json_data, headers=headers)
+
+    # Handle the response
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {'error': 'Request failed with status code {}'.format(response.status_code)}  
+
 def ai(request):
     if request.method == 'POST':
         form = fhirForm(request.POST, request.FILES)
