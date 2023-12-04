@@ -17,6 +17,8 @@ from django.views.generic import TemplateView
 from django.shortcuts import render
 
 from accounts.models import NewUser
+import requests
+import json
 
 class HomePageView(TemplateView):
     template_name = "pages/home.html"
@@ -32,8 +34,46 @@ def doctor(request):
 def patient(request):
     return render(request, 'patient.html')
 
+def send_post_to_flask(data):
+    # URL of the Flask app
+    url = 'http://localhost:5000/fhir_predict'
+    headers = {'Content-Type': 'application/json'}
+
+    json_data = json.dumps(data)
+
+    # Send the POST request
+    response = requests.post(url, data=json_data, headers=headers)
+
+    # Handle the response
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {'error': 'Request failed with status code {}'.format(response.status_code)}    
+
 def ai(request):
-    return render(request, 'ai.html')
+    if request.method == 'POST':
+        form = fhirForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Get the uploaded file
+            uploaded_file = request.FILES['fhir_file']
+
+            # Read the content of the file
+            file_data = uploaded_file.read()
+
+            # Convert file data to JSON object if it's JSON
+            try:
+                json_data = json.loads(file_data)
+            except json.JSONDecodeError:
+                # Handle error if the file is not a valid JSON
+                return render(request, 'ai.html', {'error': 'Invalid JSON file'})
+
+            # Now send this data to the Flask app
+            response = send_post_to_flask(json_data)
+            return render(request, 'ai.html', {'response': response})
+    else:
+        form = fhirForm()
+
+    return render(request, 'ai.html', {'form': form})  
 
 from django.contrib.auth import get_user_model
 
