@@ -73,7 +73,8 @@ def ai(request):
     else:
         form = fhirForm()
 
-    return render(request, 'ai.html', {'form': form})  
+    context = {'user': getUser(request), 'form': form}
+    return render(request, 'ai.html', context)  
 
 from django.contrib.auth import get_user_model
 
