@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import get_user_model
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -36,6 +36,32 @@ def send_post_to_flask(data):
     url = 'http://localhost:5000/fhir_predict'
     headers = {'Content-Type': 'application/json'}
 
+def ai(request):
+    if request.method == 'POST':
+        form = fhirForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Get the uploaded file
+            uploaded_file = request.FILES['fhir_file']
+            # Read the content of the file
+            file_data = uploaded_file.read()
+            # Convert file data to JSON object if it's JSON
+            try:
+                json_data = json.loads(file_data)
+            except json.JSONDecodeError:
+                # Handle error if the file is not a valid JSON
+                return render(request, 'ai.html', {'error': 'Invalid JSON file'})
+            # Now send this data to the Flask app
+            response = send_post_to_flask(json_data)
+            return render(request, 'ai.html', {'response': response})
+    else:
+        form = fhirForm()
+    context = {'form': form}
+    return render(request, 'ai.html', context)  
+
+def providers(request):
+    context = {'users': NewUser.objects.all()}
+    return render(request, 'providers.html', context)
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def process_account(request):
@@ -45,7 +71,6 @@ def process_account(request):
     # Process the account data here
 
     return JsonResponse({'status': 'success'})
-
 
 def metamask_signin(request):
     # Retrieve Ethereum account from session or request
