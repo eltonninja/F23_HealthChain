@@ -79,8 +79,8 @@ def ai(request):
 from django.contrib.auth import get_user_model
 
 def providers(request):
-    users = NewUser.objects.all()
-    return render(request, 'providers.html', {'users': users})
+    context = {'user': getUser(request), 'users': NewUser.objects.all()}
+    return render(request, 'providers.html', context)
 
 # def metamask_signin(request):
 #     return render(request, 'pages/metamask_signin.html')
