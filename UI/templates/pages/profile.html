@@ -1,0 +1,17 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+  <h2>User Profile</h2>
+  <p>Username: {{ user.username }}</p>
+  <p>Name: {{ user.name }}</p>
+  <p>Phone: {{ user.phone }}</p>
+  <p>Address: {{ user.Address }}</p>
+  <p>City: {{ user.city }}</p>
+  <p>Specialty: {{ user.specialty }}</p>
+  <p>Country: {{ user.country }}</p>
+  <p>Year: {{ user.year }}</p>
+  <!-- Add more fields as needed -->
+{% endblock %}

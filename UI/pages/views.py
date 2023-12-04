@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import redirect, render
 
 #handle account
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
@@ -118,5 +118,18 @@ def fhir_upload(request):
         form = fhirForm()
     return render(request, 'fhir_upload.html', {'form': form})
 
+def profile(request):
+    ethereum_account = request.session.get('ethereum_account')
 
+    if ethereum_account is None:
+        # Redirect to login page or another appropriate page if ethereum_account is not in session
+        return redirect('login')  # Replace 'login' with your login page's URL name
 
+    try:
+        user = NewUser.objects.get(username=ethereum_account)
+    except NewUser.DoesNotExist:
+        # Handle the case where no user is found
+        raise Http404("User not found")
+
+    context = {'user': user}
+    return render(request, 'pages/profile.html', context)
