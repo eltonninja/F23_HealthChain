@@ -1,22 +1,8 @@
-import json
-from web3 import Web3, Account
-from Blockchain_functions import *
-
-#Testing Block
-
 def test():
   blockChain = BlockchainClass()
   
   patient_address = "0x0000000000000000000000000000000000000000"
   doctor_address =  "0x0000000000000000000000000000000000000001"
-  
-  #Patient Creation
-  blockChain.createPatient(patient_address, "John Smith", 1998)
-  print("Created Patient")
-  
-  #Doctor Creation
-  blockChain.createDoctor(doctor_address, "Bob Bobby", "Nose Doctor", 4)
-  print("Created Doctor")
   
   #add authorized doctor
   blockChain.addAuthorizedDoctor(patient_address, doctor_address)
@@ -26,6 +12,7 @@ def test():
   
   hash_ = "testHash"
   pointer = "testPointer"
+
   #upload record
   results = blockChain.uploadRecord(patient_address, doctor_address, hash_, pointer)
   print("First upload: ", results)
@@ -48,6 +35,9 @@ def test():
 
   results = blockChain.uploadRecord(patient_address, doctor_address, hash_, pointer)
   print("Second upload: ", results)
+
+  #get medical records as patient
+  print("Patient Data Query results: ", blockChain.patientHashPointer(patient_address))
 
 if __name__ == "__main__":
   test()
