@@ -181,3 +181,14 @@ def profile(request):
 
     context = {'user': user, 'form': form}
     return render(request, 'pages/profile.html', context)
+
+#Return User if exists in database
+def getUser(request):
+    ethereum_account = request.session.get('ethereum_account')
+
+    if ethereum_account is None:
+        return None
+
+    user = NewUser.objects.get(username=ethereum_account)
+
+    return user
