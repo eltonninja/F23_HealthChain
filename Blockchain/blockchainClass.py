@@ -10,7 +10,8 @@ class BlockchainClass():
 
   def __init__(self):
 
-    contract_abi = json.load(open("Blockchain/abi.json"))
+    #contract_abi = json.load(open("Blockchain/abi.json"))
+    contract_abi = json.load(open("abi.json"))
 
     #infura key
     infura_url = "https://sepolia.infura.io/v3/7be17999d53e49ba8a3f5e2776d1dff0"
