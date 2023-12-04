@@ -1,14 +1,12 @@
 import json
 from web3 import Web3, Account
 
-
-
 #class to interact with the blockchain smart contract
 class BlockchainClass():
 
   def __init__(self):
 
-    contract_abi = json.load(open("Blockchain/abi.json"))
+    contract_abi = json.load(open("abi.json"))
 
     #infura key
     infura_url = "https://sepolia.infura.io/v3/7be17999d53e49ba8a3f5e2776d1dff0"
@@ -24,59 +22,9 @@ class BlockchainClass():
     self.address = account.address
 
     #same here environmental variable
-    contract_address = "0x53b982Ee7ba21D357307CA4154Edb9C3d745886f"
+    contract_address = "0xceB681C3b0581e1Dcc8049935f0de7358db5C8BD"
     
     self.contract = self.web3.eth.contract(address=contract_address, abi=contract_abi)
-    
-
-  
-  #function to add a patient's infromation to the blockchain
-  def createPatient(self, patientAddress, patientName, patientBirthYear):
-
-    Chain_id = self.web3.eth.chain_id
-
-    nonce = self.web3.eth.get_transaction_count(self.address)
-
-    # Build the transaction to call the function
-    transaction = self.contract.functions.addPatient(patientAddress, patientName, patientBirthYear).build_transaction({
-        'from': self.address,
-        'chainId': Chain_id,
-        'nonce': nonce,  
-    })
-
-    # Sign the transaction
-    signed_transaction = self.web3.eth.account.sign_transaction(transaction, self.private_key)  
-
-    # Send the transaction
-    tx_hash = self.web3.eth.send_raw_transaction(signed_transaction.rawTransaction)
-
-    # Wait for the transaction to be mined
-    tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
-
-  #function to add a docotor to the blockchain
-  def createDoctor(self, doctorAddress, doctorName, doctorSpecialty, doctorRating):
-
-    Chain_id = self.web3.eth.chain_id
-
-    nonce = self.web3.eth.get_transaction_count(self.address)
-
-    # Build the transaction to call the function
-    transaction = self.contract.functions.addDoctor(doctorAddress, doctorName, doctorSpecialty, doctorRating).build_transaction({
-        'from': self.address,
-        'chainId': Chain_id,
-        'nonce': nonce,  
-    })
-
-    # Sign the transaction
-    signed_transaction = self.web3.eth.account.sign_transaction(transaction, self.private_key)  
-
-    # Send the transaction
-    tx_hash = self.web3.eth.send_raw_transaction(signed_transaction.rawTransaction)
-
-    # Wait for the transaction to be mined
-    tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
-
-
 
   #Patient adds/remove doctor to his list of allowed doctors
   
@@ -130,7 +78,7 @@ class BlockchainClass():
   #Doctor upload/edit medical record
 
   #uploads the patient medical record to the database
-  def uploadRecord(self, patientAddress, doctorAddress, hash_, record):
+  def uploadRecord(self, patientAddress, doctorAddress, hash_, pointer):
 
     if(self.contract.functions.doctorCheckPermissions(patientAddress, doctorAddress).call()):
       
