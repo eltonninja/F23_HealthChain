@@ -81,7 +81,7 @@ def ai(request):
 from django.contrib.auth import get_user_model
 
 def providers(request):
-    context = {'user': getUser(request), 'users': NewUser.objects.all()}
+    context = {'user': getUser(request), 'users': NewUser.objects.filter(specialty__isnull=False)}
     return render(request, 'providers.html', context)
 
 # def metamask_signin(request):
@@ -171,7 +171,7 @@ def profile(request):
 
     #if user not exist, return to login, no reason should be in profile
     if user is None:
-        return redirect('login')
+        return redirect('pages/metamask_signin.html')
 
     if request.method == 'POST':
         form = UserEditForm(request.POST, instance=user)
