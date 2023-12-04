@@ -57,7 +57,10 @@ def fhir_predict():
             recommendation = specialists[suspected_disease]         
 
         # Format and send back the predictions
-        return jsonify("Suggested Specialty Referral: " + recommendation)
+        if recommendation == "none":
+            return jsonify("Based on an analysis of your medical records, there is no referral necessary")
+        else:    
+            return jsonify("Based on an analysis of your medical records, it is suggested that you see a " + recommendation)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
