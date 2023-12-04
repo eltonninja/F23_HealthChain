@@ -1,17 +1,14 @@
 import json
 from web3 import Web3, Account
 
-#----------------------------------------------------------------------------------------------------
-
-#Create Doctor/Patient
 
 
+#class to interact with the blockchain smart contract
 class BlockchainClass():
 
   def __init__(self):
 
-    #contract_abi = json.load(open("Blockchain/abi.json"))
-    contract_abi = json.load(open("abi.json"))
+    contract_abi = json.load(open("Blockchain/abi.json"))
 
     #infura key
     infura_url = "https://sepolia.infura.io/v3/7be17999d53e49ba8a3f5e2776d1dff0"
@@ -32,8 +29,8 @@ class BlockchainClass():
     self.contract = self.web3.eth.contract(address=contract_address, abi=contract_abi)
     
 
-
-
+  
+  #function to add a patient's infromation to the blockchain
   def createPatient(self, patientAddress, patientName, patientBirthYear):
 
     Chain_id = self.web3.eth.chain_id
@@ -56,7 +53,7 @@ class BlockchainClass():
     # Wait for the transaction to be mined
     tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
 
-
+  #function to add a docotor to the blockchain
   def createDoctor(self, doctorAddress, doctorName, doctorSpecialty, doctorRating):
 
     Chain_id = self.web3.eth.chain_id
@@ -80,12 +77,9 @@ class BlockchainClass():
     tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
 
 
-  #----------------------------------------------------------------------------------------------------
 
   #Patient adds/remove doctor to his list of allowed doctors
-
-  #Patient adds doctor to his list of allowed doctors
-  #happens when the patient does something on the UI (not sure how that looks)
+  
   def addAuthorizedDoctor(self, patientAddress, doctorAddress):
 
     Chain_id = self.web3.eth.chain_id
@@ -109,8 +103,7 @@ class BlockchainClass():
     tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
 
 
-  #Patient removes doctor to his list of allowed doctors
-  #happens when the patient does something on the UI (not sure how that looks)
+  #Patient removes doctor from his list of allowed doctors
   def removeAuthorizedDoctor(self, patientAddress, doctorAddress):
     
     Chain_id = self.web3.eth.chain_id
@@ -134,13 +127,9 @@ class BlockchainClass():
     tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
 
     
-
-  #----------------------------------------------------------------------------------------------------
-
   #Doctor upload/edit medical record
 
   #uploads the patient medical record to the database
-  #doctor uploads a FHIR or CSV file (tbd) through the UI
   def uploadRecord(self, patientAddress, doctorAddress, hash_, record):
 
     if(self.contract.functions.doctorCheckPermissions(patientAddress, doctorAddress).call()):
@@ -170,7 +159,6 @@ class BlockchainClass():
     
     return 1
 
-  #----------------------------------------------------------------------------------------------------
 
   #Database Query Functions
 
@@ -182,12 +170,15 @@ class BlockchainClass():
     pointer = self.contract.functions.returnPointer(patientAddress).call()
     hash_ = self.contract.functions.returnHash(patientAddress).call()
 
+    if pointer != None:
+        return pointer, hash_
+
     #else return -1, somehandling client side will be needed to show an error message if this -1 is returned
     return -1 
 
 
   #funtion for doctor to get the hash of the medical record and the pointer to the medical record
-  #returns the patient's medical record or an error
+  #returns the patient's pointer and mr hash or an error
   #returns -1 for pointer error
   #returns -2 for permission error
   def doctorHashPointer(self, patientAddress, doctorAddress):
@@ -197,9 +188,6 @@ class BlockchainClass():
       pointer = self.contract.functions.returnPointer(patientAddress).call()
       hash_ = self.contract.functions.returnHash(patientAddress).call()
 
-      print("pointer", pointer)
-      print("hash", hash_)
-
       if pointer != None:
         return pointer, hash_
 
@@ -207,5 +195,3 @@ class BlockchainClass():
     
     #else return no permission error or -2
     return -2
-
-  #----------------------------------------------------------------------------------------------------
