@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 #import DoctorCreationForm and PatientCreationForm from forms.py
-from accounts.forms import UserDetailsForm, UserEditForm, fhirForm
+from accounts.forms import UserDetailsForm, UserEditForm, fhirForm, connectForm
 
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
@@ -16,6 +16,8 @@ from django.shortcuts import render, redirect
 from accounts.models import NewUser
 import requests
 import json
+
+from Blockchain import blockchainClass
 
 def HomePageView(request):
     return render(request, 'pages/home.html')
@@ -130,6 +132,10 @@ def patient_details(request):
         form = UserDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
+            #get address from form
+            address = form.cleaned_data.get('address')
+            blockchain = blockchainClass()
+            blockchain.addAuthorizedDoctor(request.user.address, address)
             return redirect('/')  # Redirect to home after saving the form
         
         # Handle invalid form case if necessary

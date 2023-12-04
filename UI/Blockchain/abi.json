@@ -1,0 +1,128 @@
+[
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_patientAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_doctorAddress",
+				"type": "address"
+			}
+		],
+		"name": "authorizeDoctor",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_patientAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_doctorAddress",
+				"type": "address"
+			}
+		],
+		"name": "doctorCheckPermissions",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_patientAddress",
+				"type": "address"
+			}
+		],
+		"name": "returnHash",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_patientAddress",
+				"type": "address"
+			}
+		],
+		"name": "returnPointer",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_patientAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_doctorAddress",
+				"type": "address"
+			}
+		],
+		"name": "revokeDoctor",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_patientAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_hash",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_pointer",
+				"type": "string"
+			}
+		],
+		"name": "setPatientHashPointer",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

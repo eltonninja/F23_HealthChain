@@ -54,4 +54,4 @@ class connectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(connectForm, self).__init__(*args, **kwargs)
         self.fields['address'].required = False
-        self.fields['address'].widg
+        self.fields['address'].widget.attrs['placeholder'] = '0x...'
