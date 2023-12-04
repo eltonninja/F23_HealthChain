@@ -6,8 +6,9 @@ from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
+from django.contrib.auth.decorators import login_required
 
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 
 
 #import DoctorCreationForm and PatientCreationForm from forms.py
@@ -21,13 +22,11 @@ import requests
 import json
 
 def HomePageView(request):
-    context = {'user': getUser(request)}
-    return render(request, 'pages/home.html', context)
+    return render(request, 'pages/home.html')
 
 
 def AboutPageView(request):
-    context = {'user': getUser(request)}
-    return render(request, 'pages/about.html', context)
+    return render(request, 'pages/about.html')
 
 
 def doctor(request):
@@ -75,17 +74,13 @@ def ai(request):
     else:
         form = fhirForm()
 
-    context = {'user': getUser(request), 'form': form}
+    context = {'form': form}
     return render(request, 'ai.html', context)  
 
 from django.contrib.auth import get_user_model
 
 def providers(request):
-    #get only doctors (users with specialty not blank)
-    #context = {'user': getUser(request), 'users': NewUser.objects.all()}
-    context = {'user': getUser(request), 'users': NewUser.objects.exclude(specialty__isnull=True).exclude(specialty='')}
-    
-
+    context = {'users': NewUser.objects.all()}
     return render(request, 'providers.html', context)
 
 # def metamask_signin(request):
@@ -111,50 +106,36 @@ def metamask_signin(request):
         return render(request, 'pages/metamask_signin.html') #return to signin, it didnt work
     
     print("metamask_signin | account: " + ethereum_account)
-    request.session['ethereum_account'] = ethereum_account  # Store in session
+    user = authenticate(request, ethereum_account=ethereum_account)
 
-    # Check if user details are already filled out
-    try:
-        user = NewUser.objects.get(username=ethereum_account)
-        if user and user.has_filled_details():  # Assuming `has_filled_details` method checks if details are filled
+    if user:
+        login(request, user)
+        if user.has_filled_details():
             print('-address in database || user has filled details')
-            return redirect('/')  # All set! : Redirect to user dashboard or home page, all set
+            return redirect('/')  # All set! Redirect to the home page
         else:
             print('-address in database || user has NOT filled all details')
-    except NewUser.DoesNotExist:
+    else:
+        # Create a new user if not exist
         print('-address NOT in database || user has NOT filled all details')
-        # Create a new user with the Ethereum account as the username
-        new_user = NewUser(username=ethereum_account)
+        new_user = NewUser.objects.create(username=ethereum_account)
         new_user.save()
+        login(request, new_user)
         print('New user created with username=', ethereum_account)
-    
-    # IF here, profile need to be updated, redirect to patient-details to do so
     return redirect('patient-details')  # Redirect to fill details form
     
 
 def patient_details(request):
     if request.method == 'POST':
-        form = UserDetailsForm(request.POST)
+        form = UserDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
-            ethereum_account = request.session.get('ethereum_account')
-            print("retrieved address: " + ethereum_account)
-            # Fetch the existing user
-            try:
-                patient = NewUser.objects.get(username=ethereum_account)
-                # Update user details
-                for field, value in form.cleaned_data.items():
-                    setattr(patient, field, value)
-                patient.save()
-                backend = NewUser.objects.get(id=patient.id)
-                user = backend
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('/')
+            form.save()
+            return redirect('/')  # Redirect to home after saving the form
         
-            except NewUser.DoesNotExist:
-                # Handle case where user does not exist
-                pass  # Implement appropriate logic
+        # Handle invalid form case if necessary
     else:
-        form = UserDetailsForm()
+        form = UserDetailsForm(instance=request.user)
+    
     return render(request, 'patient_details.html', {'form': form})
 
 def fhir_upload(request):
@@ -166,36 +147,19 @@ def fhir_upload(request):
     else:
         form = fhirForm()
 
-    context = {'user': getUser(request), 'form': form}
+    context = {'user': request.user, 'form': form}
     return render(request, 'fhir_upload.html', context)
 
+@login_required
 def profile(request):
-    #get user
-    user = getUser(request)
-
-    #if user not exist, return to login, no reason should be in profile
-    if user is None:
-        return redirect('pages/metamask_signin.html')
-
     if request.method == 'POST':
-        form = UserEditForm(request.POST, instance=user)
+        form = UserEditForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             # Redirect to some page after saving the form, e.g., back to the profile page
             return redirect('profile')
     else:
-        form = UserEditForm(instance=user)
+        form = UserEditForm(instance=request.user)
 
-    context = {'user': user, 'form': form}
+    context = {'form': form}
     return render(request, 'pages/profile.html', context)
-
-#Return User if exists in database
-def getUser(request):
-    ethereum_account = request.session.get('ethereum_account')
-
-    if ethereum_account is None:
-        return None
-
-    user = NewUser.objects.get(username=ethereum_account)
-
-    return user
