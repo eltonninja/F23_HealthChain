@@ -1,11 +1,11 @@
 from django.urls import path
 
-from .views import HomePageView, AboutPageView,doctor, patient, ai, providers, process_account, patient_details, metamask_signin, fhir_upload, profile
+from .views import HomePageView, AboutPageView, doctor, patient, ai, providers, process_account, patient_details, metamask_signin, fhir_upload, profile
 
 
 urlpatterns = [
-    path("", HomePageView.as_view(), name="home"),
-    path("about/", AboutPageView.as_view(), name="about"),
+    path("", HomePageView, name="home"),
+    path("about/", AboutPageView, name="about"),
     path('doctor/', doctor, name='doctor'),
     path('patient/', patient, name='patient'),
     path('ai/', ai, name='ai'),

@@ -20,12 +20,14 @@ from accounts.models import NewUser
 import requests
 import json
 
-class HomePageView(TemplateView):
-    template_name = "pages/home.html"
+def HomePageView(request):
+    context = {'user': getUser(request)}
+    return render(request, 'pages/home.html', context)
 
 
-class AboutPageView(TemplateView):
-    template_name = "pages/about.html"
+def AboutPageView(request):
+    context = {'user': getUser(request)}
+    return render(request, 'pages/about.html', context)
 
 
 def doctor(request):
