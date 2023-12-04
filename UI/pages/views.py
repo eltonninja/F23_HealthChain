@@ -81,7 +81,11 @@ def ai(request):
 from django.contrib.auth import get_user_model
 
 def providers(request):
-    context = {'user': getUser(request), 'users': NewUser.objects.filter(specialty__isnull=False)}
+    #get only doctors (users with specialty not blank)
+    #context = {'user': getUser(request), 'users': NewUser.objects.all()}
+    context = {'user': getUser(request), 'users': NewUser.objects.exclude(specialty__isnull=True).exclude(specialty='')}
+    
+
     return render(request, 'providers.html', context)
 
 # def metamask_signin(request):

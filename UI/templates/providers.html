@@ -1,11 +1,34 @@
 {% extends '_base.html' %}
 
 {% block content %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+</style>
+
 <table>
     <thead>
         <tr>
             <th>Name</th>
-            <th>Email</th>
+            <th>Specialty</th>
+            <th>Address</th>
+            <th>City</th>
             <!-- Add more columns as needed -->
         </tr>
     </thead>
@@ -13,8 +36,9 @@
         {% for user in users %}
         <tr>
             <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-
+            <td>{{ user.specialty }}</td>
+            <td>{{ user.address }}</td>
+            <td>{{ user.city }}</td>
             <!-- Add more cells as needed -->
         </tr>
         {% endfor %}
