@@ -1,41 +1,35 @@
 from django.views.generic import TemplateView
 from django.shortcuts import redirect, render
-
-#handle account
 from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-import json
-
 from django.contrib.auth import login
-
-
-#import DoctorCreationForm and PatientCreationForm from forms.py
 from accounts.forms import UserDetailsForm, UserEditForm, fhirForm
-
 from django.views.generic import TemplateView
 from django.shortcuts import render
-
 from accounts.models import NewUser
 import requests
 import json
 
+#Home page rendering
 def HomePageView(request):
     context = {'user': getUser(request)}
     return render(request, 'pages/home.html', context)
 
-
+#About page rendering
 def AboutPageView(request):
     context = {'user': getUser(request)}
     return render(request, 'pages/about.html', context)
 
-
+#Doctor page rendering
 def doctor(request):
     return render(request, 'doctor.html')
 
+#Patient page rendering
 def patient(request):
     return render(request, 'patient.html')
 
+#AI query request
 def send_post_to_flask(data):
     # URL of the Flask app
     url = 'http://localhost:5000/fhir_predict'
@@ -52,6 +46,7 @@ def send_post_to_flask(data):
     else:
         return {'error': 'Request failed with status code {}'.format(response.status_code)}    
 
+#AI page rendering
 def ai(request):
     if request.method == 'POST':
         form = fhirForm(request.POST, request.FILES)
@@ -80,6 +75,7 @@ def ai(request):
 
 from django.contrib.auth import get_user_model
 
+#Providers page rendering
 def providers(request):
     #get only doctors (users with specialty not blank)
     #context = {'user': getUser(request), 'users': NewUser.objects.all()}
@@ -88,9 +84,7 @@ def providers(request):
 
     return render(request, 'providers.html', context)
 
-# def metamask_signin(request):
-#     return render(request, 'pages/metamask_signin.html')
-
+#Process account request
 @csrf_exempt
 @require_http_methods(["POST"])
 def process_account(request):
@@ -101,7 +95,7 @@ def process_account(request):
 
     return JsonResponse({'status': 'success'})
 
-
+#Metamask signin request
 def metamask_signin(request):
     # Retrieve Ethereum account from session or request
     ethereum_account = request.GET.get('account')
@@ -131,7 +125,7 @@ def metamask_signin(request):
     # IF here, profile need to be updated, redirect to patient-details to do so
     return redirect('patient-details')  # Redirect to fill details form
     
-
+#Patient details form request
 def patient_details(request):
     if request.method == 'POST':
         form = UserDetailsForm(request.POST)
@@ -157,6 +151,7 @@ def patient_details(request):
         form = UserDetailsForm()
     return render(request, 'patient_details.html', {'form': form})
 
+#Fhir upload form request
 def fhir_upload(request):
     if request.method == 'POST':
         form = fhirForm(request.POST, request.FILES)
@@ -169,6 +164,7 @@ def fhir_upload(request):
     context = {'user': getUser(request), 'form': form}
     return render(request, 'fhir_upload.html', context)
 
+#Profile page request
 def profile(request):
     #get user
     user = getUser(request)

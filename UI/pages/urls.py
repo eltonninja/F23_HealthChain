@@ -10,7 +10,6 @@ urlpatterns = [
     path('patient/', patient, name='patient'),
     path('ai/', ai, name='ai'),
     path('providers/', providers, name='providers'),
-
     path('path-to-your-django-view/', process_account, name='process_account'),
     path('patient-details/', patient_details, name='patient-details'),
     path('metamask_signin/', metamask_signin, name='metamask_signin'),
