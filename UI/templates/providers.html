@@ -22,7 +22,7 @@
     }
 </style>
 
-<input type="text" id="searchInput" placeholder="Search by name">
+<input type="text" id="searchInput" placeholder="Search by specialty">
 
 <table>
     <thead>
@@ -53,8 +53,8 @@
         const rows = document.querySelectorAll("#tableBody tr");
 
         rows.forEach(row => {
-            const name = row.getElementsByTagName("td")[0].textContent.toLowerCase();
-            if (name.includes(input)) {
+            const specialty = row.getElementsByTagName("td")[1].textContent.toLowerCase(); // Change index to 1 for the specialty column
+            if (specialty.includes(input)) {
                 row.style.display = "";
             } else {
                 row.style.display = "none";
