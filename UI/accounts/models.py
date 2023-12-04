@@ -8,7 +8,7 @@ class NewUser(AbstractUser):
     phone = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
-    specialty = models.CharField(max_length=100)
+    specialty = models.CharField(max_length=100, blank=True)
     country = models.CharField(max_length=100)
     year = models.CharField(max_length=100)
 

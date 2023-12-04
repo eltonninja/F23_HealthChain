@@ -5,13 +5,22 @@
 
 {% block content %}
   <h2>User Profile</h2>
+  
+  <!-- Display User Information -->
   <p>Username: {{ user.username }}</p>
   <p>Name: {{ user.name }}</p>
   <p>Phone: {{ user.phone }}</p>
-  <p>Address: {{ user.Address }}</p>
+  <p>Address: {{ user.address }}</p>
   <p>City: {{ user.city }}</p>
   <p>Specialty: {{ user.specialty }}</p>
   <p>Country: {{ user.country }}</p>
   <p>Year: {{ user.year }}</p>
-  <!-- Add more fields as needed -->
+
+  <!-- Update User Information Form -->
+  <h3>Update Profile</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- Renders the form fields -->
+    <button type="submit">Save changes</button>
+  </form>
 {% endblock %}

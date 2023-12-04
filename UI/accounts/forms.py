@@ -20,6 +20,11 @@ class UserDetailsForm(forms.ModelForm):
         super(UserDetailsForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].required = False
 
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = NewUser
+        fields = ['name', 'phone', 'address', 'city', 'specialty', 'country', 'year']
+
 class fhirForm(forms.ModelForm):
     class Meta:
         model = Fhir

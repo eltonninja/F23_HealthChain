@@ -11,7 +11,7 @@ from django.contrib.auth import login
 
 
 #import DoctorCreationForm and PatientCreationForm from forms.py
-from accounts.forms import UserDetailsForm, fhirForm
+from accounts.forms import UserDetailsForm, UserEditForm, fhirForm
 
 from django.views.generic import TemplateView
 from django.shortcuts import render
@@ -125,11 +125,16 @@ def profile(request):
         # Redirect to login page or another appropriate page if ethereum_account is not in session
         return redirect('login')  # Replace 'login' with your login page's URL name
 
-    try:
-        user = NewUser.objects.get(username=ethereum_account)
-    except NewUser.DoesNotExist:
-        # Handle the case where no user is found
-        raise Http404("User not found")
+    user = NewUser.objects.get(username=ethereum_account)
 
-    context = {'user': user}
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            # Redirect to some page after saving the form, e.g., back to the profile page
+            return redirect('profile')
+    else:
+        form = UserEditForm(instance=user)
+
+    context = {'user': user, 'form': form}
     return render(request, 'pages/profile.html', context)
