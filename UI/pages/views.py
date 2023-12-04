@@ -69,10 +69,22 @@ def ai(request):
     context = {'form': form}
     return render(request, 'ai.html', context)  
 
+@login_required
 def providers(request):
     context = {
     'user': NewUser.objects.all(),
     'users': NewUser.objects.exclude(specialty__isnull=True).exclude(specialty='')}
+
+    #form to connect patient to doctor
+    if request.method == 'POST':
+        form = connectForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('providers')
+    else:
+        form = connectForm(instance=request.user)
+    context['form'] = form
+
     return render(request, 'providers.html', context)
 
 @csrf_exempt
