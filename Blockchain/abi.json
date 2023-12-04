@@ -8,57 +8,6 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_doctorAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_specialization",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_rating",
-				"type": "uint256"
-			}
-		],
-		"name": "addDoctor",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_patientAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_birthYear",
-				"type": "uint256"
-			}
-		],
-		"name": "addPatient",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "_patientAddress",
 				"type": "address"
 			},
