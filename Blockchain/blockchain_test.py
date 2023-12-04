@@ -24,10 +24,13 @@ def test():
   blockChain.doctorHashPointer(patient_address, doctor_address)
   print("Doctor Data Query results: ", blockChain.patientHashPointer(patient_address))
 
-  
+  print("Check Permission: ", blockChain.doctorPermission(patient_address, doctor_address))
+
   #remove authorized doctor
   blockChain.removeAuthorizedDoctor(patient_address, doctor_address)
   print("Removed doctor")
+  
+  print("Check Permission: ", blockChain.doctorPermission(patient_address, doctor_address))
   
   #test upload record while not having permissions
   hash_ = "testHash2"

@@ -1,12 +1,14 @@
 import json
 from web3 import Web3, Account
 
+
+
 #class to interact with the blockchain smart contract
 class BlockchainClass():
 
   def __init__(self):
 
-    contract_abi = json.load(open("abi.json"))
+    contract_abi = json.load(open("Blockchain/abi.json"))
 
     #infura key
     infura_url = "https://sepolia.infura.io/v3/7be17999d53e49ba8a3f5e2776d1dff0"
@@ -25,6 +27,7 @@ class BlockchainClass():
     contract_address = "0xceB681C3b0581e1Dcc8049935f0de7358db5C8BD"
     
     self.contract = self.web3.eth.contract(address=contract_address, abi=contract_abi)
+
 
   #Patient adds/remove doctor to his list of allowed doctors
   
@@ -143,3 +146,6 @@ class BlockchainClass():
     
     #else return no permission error or -2
     return -2
+  
+  def doctorPermission(self, patientAddress, doctorAddress):
+    return self.contract.functions.doctorCheckPermissions(patientAddress, doctorAddress).call()
