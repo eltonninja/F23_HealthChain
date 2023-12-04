@@ -58,9 +58,9 @@ def fhir_predict():
 
         # Format and send back the predictions
         if recommendation == "none":
-            return jsonify("Based on an analysis of your medical records, there is no referral necessary")
+            return jsonify("Based on an analysis of your medical records, there is no\nspecialist that the AI would recommend")
         else:    
-            return jsonify("Based on an analysis of your medical records, it is suggested that you see a " + recommendation)
+            return jsonify("Based on an analysis of your medical records, it is suggested\nthat you see a " + recommendation)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
