@@ -7,6 +7,7 @@ HealthChain aims to create a framework for standardizing personal health data us
 ### Instructions
 - Clone the repository onto your local machine
 - Open a terminal/command prompt and navigate to the UI directory of the repository
+- pip install the requirements using 'pip install -r requirements.txt'
 - Run the following command 'python manage.py runserver'
 - Navigate to http://127.0.0.1:8000/ using an internet browser
 
