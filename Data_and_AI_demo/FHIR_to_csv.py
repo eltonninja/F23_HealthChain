@@ -8,6 +8,8 @@ def load_fhir_json(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
+# age not included in FHIR, so it is
+# derived from visit date and birth date
 def calculate_age(birth_date_str, visit_dates):
 
     birth_date = datetime.strptime(birth_date_str, "%Y-%m-%d")
@@ -20,6 +22,7 @@ def calculate_age(birth_date_str, visit_dates):
     
     return ages
 
+# find gender and birth date
 def get_patient_static_data(patient_resource):
 
     patient_id = patient_resource['id']
@@ -33,6 +36,10 @@ def get_patient_static_data(patient_resource):
     else:
         return patient_id, {'male': 0, 'female': 0, 'birth_date': birth_date}       
 
+# main parser of FHIR; it is assumed that
+# a new encounter with a patient represents a
+# a new clinic visit. conditions and observations are
+# extracted for data in each of these visit dates
 def extract_visit_data(entries, patient_to_visits_map):
     for entry in entries:
         resource = entry['resource']
@@ -67,7 +74,8 @@ def extract_visit_data(entries, patient_to_visits_map):
             
             patient_to_visits_map[patient_id][visit_id] = visit_data
 
-
+# assemble extracted patient data into a pandas dataframe,
+# sorted by visit date
 def process_patient_data(patient_id, visits, patient_static_data):
 
     visit_data_list = list(visits.values())
@@ -83,7 +91,7 @@ def process_patient_data(patient_id, visits, patient_static_data):
 
     return patient_df  
 
-
+# save pandas dataframe to output directory as csv
 def save_patient_data_to_csv(patient_to_visits_map, patient_static_data, output_dir):
 
     for patient_id, visits in patient_to_visits_map.items():
@@ -91,6 +99,7 @@ def save_patient_data_to_csv(patient_to_visits_map, patient_static_data, output_
         patient_df.to_csv(os.path.join(output_dir, f'patient_{patient_id}.csv'), index=False)
 
 
+# locate and assign patient data to patient_static_data 
 def assign_patient_data(entries, patient_static_data):
 
     for entry in entries:
@@ -102,6 +111,7 @@ def assign_patient_data(entries, patient_static_data):
             patient_static_data[patient_id] = static_data
             break
 
+# all in one FHIR -> csv (pandas dataframe)
 def process_fhir_data(fhir_json):
 
     patient_to_visits_map, patient_static_data = {}, {}
@@ -115,7 +125,8 @@ def process_fhir_data(fhir_json):
 
     return patient_df 
 
-
+# all in one FHIR -> csv (pandas dataframe) for a 
+# directory of FHIR files
 def process_fhir_directory(input_dir, output_dir):
 
     Path(output_dir).mkdir(parents=True, exist_ok=True)
