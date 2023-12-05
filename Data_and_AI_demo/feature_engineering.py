@@ -8,6 +8,8 @@ class FeatureEngineering:
     # designates master features and features for removal    
     def __init__(self, dfs, df_master, master_feature_list):
         self.master_feature_dict = {feat:0 for feat in master_feature_list}
+
+        # eyeballed features for removal by relevance
         self.features_to_remove = set([
         "visit_date",
         "Cause of Death [US Standard Certificate of Death]_o",
@@ -56,6 +58,8 @@ class FeatureEngineering:
         "Mental health Telehealth Note_o"
         ])
 
+        # if a feature occurs less than 1000
+        # total across all patients, remove it
         for feat in master_feature_list:
             featList = df_master[feat]
             if feat[-2:] == "_o" and len(featList) - featList.isna().sum() < 1000:
@@ -67,6 +71,8 @@ class FeatureEngineering:
             for feat in list(df):
                 occurences[feat] += 1
 
+        # if less than 100 patients
+        # have the feature, remove it 
         for feat in master_feature_list:
             if occurences[feat] < 100:
                 print(feat, "removed for few patient occurences")       
@@ -99,10 +105,11 @@ class FeatureEngineering:
 
         return record.join(pd.DataFrame(self.engineered_features)).astype(np.float32)
 
-
+    # adds a time since last visit feature 
     def add_time_between_visits(self, record):
         self.engineered_features['time_between_visits_o'] = self.helpers['visit_time'].diff().dt.total_seconds().div(3600)
 
+    # adds month and season features    
     def add_seasonality_features(self, record):
         self.helpers['month'] = self.helpers['visit_time'].dt.month
         self.engineered_features['visit_in_summer_c'] = np.where((self.helpers['month'] >= 6) & (self.helpers['month'] <= 8), 1, 0)
@@ -110,11 +117,13 @@ class FeatureEngineering:
         self.engineered_features['visit_in_fall_c'] = np.where((self.helpers['month'] >= 9) & (self.helpers['month'] <= 11), 1, 0)
         self.engineered_features['visit_in_spring_c'] = np.where((self.helpers['month'] >= 3) & (self.helpers['month'] <= 5), 1, 0)
 
+    # finds the time between the last 5 visits    
     def add_visit_frequency(self, record):
         # Assuming monthly intervals for simplicity
         self.engineered_features['time_between_visits_5_o'] = self.helpers['visit_time'].diff(5).dt.total_seconds().div(3600)
 
+    # records the number/index of visits
     def add_visit_count_in_windows(self, record):
         # Example: Count visits per month
-        self.engineered_features['visit_count_per_month_o'] = record.index
+        self.engineered_features['visit_number_o'] = record.index
     
