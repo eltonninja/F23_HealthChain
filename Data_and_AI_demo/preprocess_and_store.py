@@ -6,13 +6,16 @@ import pickle
 from sklearn.decomposition import SparsePCA
 from feature_engineering import FeatureEngineering
 
+# Data preprocessing class
 class DataPreprocessor:
 
     def __init__(self, target_diseases):
         self.means = {}
         self.stds = {}
         self.target_diseases = target_diseases
-    
+
+    # normalization parameters are taken across
+    # across all visits of all patients
     def fit(self, df_master, sequence_length):                
 
         self.sequence_length = sequence_length
@@ -46,7 +49,9 @@ class DataPreprocessor:
 
         self.ignoreX = set(self.target_diseases)     
        
-    
+    # Transformation; conditions are forward filled, and assumed 
+    # 0 if never reported on, and observations are normalized and
+    # filled with 0 relative to the mean
     def transform(self, Xs):
 
         i = 0
@@ -73,6 +78,9 @@ class DataPreprocessor:
 
         return Xs_transformed    
 
+# Collects sequences from a patient medical record, excluded
+# for distance to last sequence (step) and density of visits (hour minimum).
+# Sequences with target condition active are taken every 2 visits if applicable
 def sequence(patient_data, target_diseases, sequence_length):
 
     hourMinimum = 24 * 365
@@ -81,7 +89,8 @@ def sequence(patient_data, target_diseases, sequence_length):
     patient_data_sequences = []
     for patient_df in patient_data:
         feats = list(patient_df)
-        # computer limit on storage was reached
+        # computer limit on storage was reached, so only lupus
+        # was extensively extracted
         included = [feat for feat in target_diseases if feat in feats and feat in ['Lupus erythematosus_c']]
         leng = len(included)
         targ_vals = patient_df[included].sum(axis=1)
@@ -104,6 +113,7 @@ def sequence(patient_data, target_diseases, sequence_length):
 
     return patient_data_sequences      
 
+# Assemble records/pandas dataframe csvs from directory
 def assemble_data(patient_app_directory, stop = None):
   
     data = []
@@ -141,7 +151,7 @@ def assemble_data(patient_app_directory, stop = None):
     print(condition_numbers)            
     return data, unique_features
 
-
+# Concatenates dataframes/patient records into one master csv
 def concatenate_dataframes(dfs, master_feature_list, ignore = set(), preprocessed = True):
   
     i = 0     
@@ -163,7 +173,7 @@ def concatenate_dataframes(dfs, master_feature_list, ignore = set(), preprocesse
 
     return pd.DataFrame(concatenated_data) 
 
-
+# Separate sequenced data into X and y pairs 
 def choose_targets(target_diseases, sequenced_data):
     
     Xs, ys = [], []
@@ -185,7 +195,7 @@ def choose_targets(target_diseases, sequenced_data):
 
     return Xs, ys    
 
-
+# partitions data into train/val/test
 def split_data(data, train, val):    
 
     trainPartition = int(len(data) * train)   
@@ -198,7 +208,8 @@ def split_data(data, train, val):
 
     return data_train, data_val, data_test
 
-
+# Assemble all features across
+# all records
 def assemble_master_feature_list(dfs):
     master_feature_list = []
     for df in dfs:
@@ -208,7 +219,7 @@ def assemble_master_feature_list(dfs):
 
     return master_feature_list            
 
-
+# Put the process together; takes hours on my computer for 23000 records
 def store_sequential_data(data_directory, target_diseases, sequence_length, train, val):
     
     print("Assembling data")
