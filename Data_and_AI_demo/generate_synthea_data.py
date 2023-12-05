@@ -5,7 +5,7 @@ import os
 synthea_path = "C:/Users/schafj2/synthea"
 
 # Variables
-num_patients, seed = 1000, 1234
+num_patients, seed = 20000, 1234
 
 os.chdir(synthea_path)
 
