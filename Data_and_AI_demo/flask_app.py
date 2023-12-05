@@ -12,6 +12,8 @@ import numpy as np
 
 app = Flask(__name__)
 
+# dictionary of disorders to specialty; observing more conditions, especially rare, would
+# best be done with sampled data for those conditions, but there is not enough space to do so
 specialists = {'Chronic sinusitis (disorder)': 'Otolaryngologist', 'Prediabetes' : 'Endocrinologist', 
     'Chronic kidney disease stage 1 (disorder)': 'Nephrologist', 'Chronic kidney disease stage 2 (disorder)': 'Nephrologist',
     'Osteoporosis (disorder)': 'Endocrinologist', 'Localized, primary osteoarthritis of the hand': 'Rheumatologist', 
@@ -29,6 +31,8 @@ with open('FE_data_obj.pkl', 'rb') as file:
 
 model = load_model('medical_transformer', custom_objects={'F1Score': F1Score})
 
+# AI set up with endpoint on local server; this is how
+# it is accessed once model is saved 
 @app.route('/fhir_predict', methods=['POST'])
 def fhir_predict():
     try:
@@ -52,11 +56,13 @@ def fhir_predict():
         for disease, pred in zip(preprocess_data_obj.target_diseases, predictions):
             disease_pred_dict[disease[:-2]] = pred
         predMax = np.max(predictions)
+
+        # If probability is above 0.7, then we make a referral
         if predMax > 0.7:
             suspected_disease = preprocess_data_obj.target_diseases[np.argmax(predictions)][:-2]
             recommendation = specialists[suspected_disease]         
 
-        # Format and send back the predictions
+        # Send back the recommendation if applicable 
         if recommendation == "none":
             return jsonify("Based on an analysis of your medical records, there is no\nspecialist that the AI would recommend")
         else:    
