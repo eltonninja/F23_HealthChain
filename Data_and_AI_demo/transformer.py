@@ -52,55 +52,14 @@ class F1Score(tf.keras.metrics.Metric):
     def from_config(cls, config):
         return cls(**config)        
 
-
-def build_transformer2(input_shape, num_diseases, head_size, num_heads, ff_dim, num_transformer_blocks):
     
-    inputs = layers.Input(shape=input_shape)
-
-    # Embedding for categorical data (is necessary and unimplemented)
-    # x = Embedding_layer(x)
-    
-    # Initial LayerNormalization (mixed with batch normalization on input: not ideal)
-    x = layers.LayerNormalization(epsilon=1e-6)(inputs)
-
-    # Transformer blocks
-    for _ in range(num_transformer_blocks):
-
-        x1 = layers.LayerNormalization(epsilon=1e-6)(x)
-        
-        attn_output = layers.MultiHeadAttention(
-            key_dim=head_size, num_heads=num_heads, dropout=0.1
-        )(x1, x1)
-        
-        x2 = layers.Add()([x, attn_output])
-        
-        x2 = layers.LayerNormalization(epsilon=1e-6)(x2)
-        
-        ffn_output = layers.Conv1D(filters=x2.shape[-1], kernel_size=1, activation='relu')(x2)
-        ffn_output = layers.Dropout(0.1)(ffn_output)
-        
-        x = layers.Add()([x2, ffn_output])
-
-    x = layers.LayerNormalization(epsilon=1e-6)(x)
-    x = layers.GlobalAveragePooling1D()(x)
-
-    outputs = layers.Dense(num_diseases, activation='sigmoid')(x)
-
-    model = models.Model(inputs=inputs, outputs=outputs)
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', F1Score(num_diseases)])
-
-    return model
 
 
 # transformer architecture
 def build_transformer(input_shape, num_diseases, head_size, num_heads, ff_dim, num_transformer_blocks):
     
     inputs = layers.Input(shape=input_shape)
-
-    # Embedding for categorical data (is necessary and unimplemented)
-    # x = Embedding_layer(x)
-    
-    # Initial LayerNormalization (mixed with batch normalization on input: not ideal)
+   
     x = inputs
 
     # Transformer blocks
@@ -167,14 +126,7 @@ def transformer_app(train_data_dfs, train_label_df, val_data_dfs, val_label_df, 
         input_shape, output_units, head_size, num_heads, ff_dim, num_transformer_blocks
     )
 
-    class_weights = compute_class_weight(
-        class_weight='balanced',
-        classes=np.unique(np.argmax(train_labels, axis=1)),
-        y=np.argmax(train_labels, axis=1)
-    )
-
-    class_weight_dict = dict(enumerate(class_weights))
-
+    # Fit with early stopping for accuracy
     history = model.fit(train_dataset, validation_data=val_dataset, epochs = ep, 
         callbacks = tf.keras.callbacks.EarlyStopping(monitor = "val_accuracy", 
             patience = pat, restore_best_weights = True), workers = 16, use_multiprocessing=True, verbose = show)
@@ -182,6 +134,8 @@ def transformer_app(train_data_dfs, train_label_df, val_data_dfs, val_label_df, 
     test_loss, test_accuracy, test_f1 = model.evaluate(test_dataset)
     print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}, Test F1: {test_f1}")
     preds = model.predict(test_data)
+
+    # Some class statistics
     counts = [0] * output_units
     counts2 = [0] * output_units
     counts3 = [0] * output_units
@@ -201,7 +155,7 @@ def transformer_app(train_data_dfs, train_label_df, val_data_dfs, val_label_df, 
     print(counts3)
     print(counts4)            
 
-    model.save('medical_transformer_2')
+    model.save('medical_transformer')
 
 if __name__ == "__main__":
 
@@ -214,15 +168,6 @@ if __name__ == "__main__":
     y_val = pd.read_csv(data_directory + '/y_val_s3.csv').drop('Unnamed: 0', axis = 1)
     X_test = pd.read_csv(data_directory + '/X_test_s2.csv').drop('Unnamed: 0', axis = 1)
     y_test = pd.read_csv(data_directory + '/y_test_s3.csv').drop('Unnamed: 0', axis = 1)
-
-
-    """for feat in list(X_train):
-        featList = X_train[feat]
-        if (featList != 0).sum() < 300:
-            X_train.drop(feat, axis = 1, inplace = True) 
-            X_val.drop(feat, axis = 1, inplace = True)
-            X_test.drop(feat, axis = 1, inplace = True)
-            print(feat)"""
 
     for feat in list(X_train):
         print(feat, (X_train[feat] != 0).sum(), (X_val[feat] != 0).sum(), (X_test[feat] != 0).sum())
