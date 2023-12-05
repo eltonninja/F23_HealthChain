@@ -43,10 +43,11 @@ if __name__ == "__main__":
 	fhir_data = load_fhir_json('Clint766_Hyatt152_f98eb589-baf2-b1cb-9bf6-7c68016d0018.json')
 	send(fhir_data)
 
-	# 
+	# Endocrinologist
 	fhir_data = load_fhir_json('Collin529_Weimann465_f63c6119-c079-20c4-3230-0bb3d63c0e78.json')
 	send(fhir_data)	
 
+	# Nephrologist
 	fhir_data = load_fhir_json('Corey514_O\'Keefe54_f10438de-565e-f23e-324d-aeda087f602c.json')
 	send(fhir_data)
 
