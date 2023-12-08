@@ -9,6 +9,35 @@ import numpy as np
 from preprocess_and_store import DataPreprocessor 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_auc_score
 from sklearn.metrics import roc_curve, auc, log_loss
+import os
+
+#Multi-label accuracy class: requires threshold (0.5) perfect match for credit
+class MultiLabelAccuracy(tf.keras.metrics.Metric):
+    def __init__(self, name='accuracy (ML)', **kwargs):
+        super(MultiLabelAccuracy, self).__init__(name=name, **kwargs)
+        self.correct_predictions = self.add_weight(name='correct_predictions', initializer='zeros')
+        self.total_predictions = self.add_weight(name='total_predictions', initializer='zeros')
+
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        # Apply the threshold to predictions
+        thresholded_preds = tf.cast(tf.greater(y_pred, 0.5), tf.float32)
+
+        # Check if all labels match exactly for each instance
+        correct_predictions_per_instance = tf.cast(tf.reduce_all(tf.equal(thresholded_preds, y_true), axis=1), tf.float32)
+        correct_predictions = tf.reduce_sum(correct_predictions_per_instance)
+
+        # Update weights
+        self.correct_predictions.assign_add(correct_predictions)
+        self.total_predictions.assign_add(tf.cast(tf.shape(y_true)[0], tf.float32))
+
+    def result(self):
+        # Calculate the accuracy
+        return self.correct_predictions / self.total_predictions
+
+    def reset_state(self):
+        # Reset the state at the start of each epoch
+        self.correct_predictions.assign(0)
+        self.total_predictions.assign(0)
 
 #F1 score implementation
 class F1Score(tf.keras.metrics.Metric):
@@ -52,7 +81,29 @@ class F1Score(tf.keras.metrics.Metric):
     def from_config(cls, config):
         return cls(**config)        
 
-    
+# Useful statistics for this unbalanced data
+def calculate_precision_recall(y_true, y_pred):
+    num_classes = len(y_true[0])
+    precision = []
+    recall = []
+
+    for class_idx in range(num_classes):
+        TP = FP = FN = 0
+        for i in range(len(y_true)):
+            if y_true[i][class_idx] == 1 and y_pred[i][class_idx] > 0.5:
+                TP += 1
+            elif y_pred[i][class_idx] > 0.5 and y_true[i][class_idx] == 0:
+                FP += 1
+            elif y_true[i][class_idx] == 1 and y_pred[i][class_idx] < 0.5:
+                FN += 1
+
+        prec = TP / (TP + FP) if TP + FP > 0 else 0
+        rec = TP / (TP + FN) if TP + FN > 0 else 0
+
+        precision.append(prec)
+        recall.append(rec)
+
+    return precision, recall    
 
 
 # transformer architecture
@@ -85,12 +136,14 @@ def build_transformer(input_shape, num_diseases, head_size, num_heads, ff_dim, n
     outputs = tf.keras.layers.Dense(num_diseases, activation='sigmoid')(x)
 
     model = models.Model(inputs=inputs, outputs=outputs)
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', F1Score(num_diseases)])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[MultiLabelAccuracy(), F1Score(num_diseases)])
 
     return model
 
 # transformer parameters and setup
-def transformer_app(train_data_dfs, train_label_df, val_data_dfs, val_label_df, test_data_dfs, test_label_df):    
+def transformer_app(train_data_dfs, train_label_df, val_data_dfs, val_label_df, test_data_dfs, test_label_df):  
+
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  
 
     train_data = tf.constant([df.values for df in train_data_dfs])
     train_labels = tf.constant([train_label_df.iloc[i] for i in range(len(train_label_df))])
@@ -119,16 +172,16 @@ def transformer_app(train_data_dfs, train_label_df, val_data_dfs, val_label_df, 
     ff_dim = 64
     num_transformer_blocks = 2
     ep = 30
-    pat = 1
+    pat = 2
     show = 1
 
     model = build_transformer(
         input_shape, output_units, head_size, num_heads, ff_dim, num_transformer_blocks
     )
 
-    # Fit with early stopping for accuracy
+    # Fit with early stopping for f1 score
     history = model.fit(train_dataset, validation_data=val_dataset, epochs = ep, 
-        callbacks = tf.keras.callbacks.EarlyStopping(monitor = "val_accuracy", 
+        callbacks = tf.keras.callbacks.EarlyStopping(monitor = "val_f1_score", mode = 'max', 
             patience = pat, restore_best_weights = True), workers = 16, use_multiprocessing=True, verbose = show)
 
     test_loss, test_accuracy, test_f1 = model.evaluate(test_dataset)
@@ -136,11 +189,15 @@ def transformer_app(train_data_dfs, train_label_df, val_data_dfs, val_label_df, 
     preds = model.predict(test_data)
 
     # Some class statistics
+    print("\nStatistics for target diseases", list(test_label_df), "with", len(test_labels), "test sequences\n\nCounts:")
     counts = [0] * output_units
     counts2 = [0] * output_units
     counts3 = [0] * output_units
     counts4 = [0] * output_units
+    correct = 0
     for pred, true in zip(preds, test_labels):
+        if np.sum(np.where(pred > 0.5, 1, 0) == true) == output_units:
+            correct += 1
         for i in range(len(pred)):
             if pred[i] >= 0.5:
                 counts[i] += 1
@@ -149,11 +206,18 @@ def transformer_app(train_data_dfs, train_label_df, val_data_dfs, val_label_df, 
             if pred[i] >= 0.5 and true[i] == 1:
                 counts3[i] += 1
             if pred[i] >= 0.7 and true[i] == 1:
-                counts4[i] += 1          
-    print(counts)
-    print(counts2)
-    print(counts3)
-    print(counts4)            
+                counts4[i] += 1      
+
+    print("Prediction count:", counts)
+    print("True count:", counts2)
+    print("True Positives 0.5:", counts3)
+    print("True Positives 0.7:", counts4) 
+    print("Accuracy:", correct / len(test_labels))  
+    print("\nF1 Constituents:")
+    precisions, recalls = calculate_precision_recall(test_labels, preds) 
+    for target, precision, recall in zip(list(test_label_df), precisions, recalls):
+        print("Target " + str(target) + " -> Precision = " + str(precision) + ", Recall = " + str(recall))
+
 
     model.save('medical_transformer')
 
