@@ -7,6 +7,7 @@ from preprocess_and_store import concatenate_dataframes
 from tensorflow.keras.models import load_model
 from preprocess_and_store import DataPreprocessor
 from transformer import F1Score
+from transformer import MultiLabelAccuracy
 import pickle
 import numpy as np
 
@@ -29,7 +30,7 @@ with open('FE_data_obj.pkl', 'rb') as file:
 #with open('SPCA_obj.pkl', 'wb') as file:
 #    sparse_pca = pickle.load(file)    
 
-model = load_model('medical_transformer', custom_objects={'F1Score': F1Score})
+model = load_model('medical_transformer', custom_objects={'F1Score': F1Score, "MultiLabelAccuracy": MultiLabelAccuracy})
 
 # AI set up with endpoint on local server; this is how
 # it is accessed once model is saved 
